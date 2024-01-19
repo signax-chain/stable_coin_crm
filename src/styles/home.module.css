@@ -1,0 +1,30 @@
+.home-container{
+    width: 100vw;
+    height: 100vh;
+}
+.home-content{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.sidebar-content{
+    width: 20%;
+    height: 100vh;
+    background-color: #b5b5b52f;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+.main-content{
+    width: 80%;
+    height: 100vh;
+}
+.module-content{
+    width: 99%;
+    height: calc(100vh - 100px);
+    overflow-y: auto !important;
+    flex-direction: column;
+    justify-content: center;
+    display: flex;
+    padding-bottom: 30px;
+}

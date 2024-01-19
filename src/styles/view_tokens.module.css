@@ -1,0 +1,90 @@
+.view__all_tokens_container{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.view__heading{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.view__all_title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.create__token_button{
+    width: 15%;
+    height: 40px;
+    color: white;
+    font-weight: 500;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.view__all_token_list{
+    margin: 5% 0px;
+}
+.view__all_token{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.dashboard__stat{
+    width: 30%;
+    height: 120px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+.dashboard__icon{
+    padding: 5px;
+    border-radius: 5px;
+    background-image: url("../assets/textures/card-background.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.dashboard__stats_data{
+    margin-left: 20px;
+    width: 100%;
+}
+.dashboard__stats_title{
+    margin: 0px 0px 0px 0px;
+    color: var(--primary-text-color);
+    font-weight: 600;
+}
+.dashboard__stats_subtitle{
+    margin: 0px 0px 0px 0px;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 20px;
+}
+.view__all_subtitle{
+    width: 90%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.view__all_group > p:nth-child(1) {
+    margin: 0px;
+    color: var(--primary-text-color);
+    font-size: 12px;
+}
+.view__all_group > p:nth-child(2) {
+    margin: 0px;
+    color: var(--primary-text-color);
+    font-size: 12px;
+    font-weight: bold;
+}

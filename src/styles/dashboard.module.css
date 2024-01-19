@@ -1,0 +1,55 @@
+.dashboard-container{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.dashboard-title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.dashboard__basic_stats{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dashboard__stat{
+    width: 30%;
+    height: 120px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+}
+.dashboard__icon{
+    padding: 5px;
+    border-radius: 5px;
+    background-image: url("../assets/textures/card-background.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.dashboard__stats_data{
+    margin-left: 20px;
+}
+.dashboard__stats_title{
+    margin: 0px 0px 0px 0px;
+    color: var(--primary-text-color);
+    font-weight: 600;
+}
+.dashboard__stats_subtitle{
+    margin: 0px 0px 0px 0px;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 20px;
+}
+.dashboard-chart{
+    width: 100%;
+    margin: 5% 0px;
+}
+.line-chart{
+    font-family: var(--secondary-font) !important;
+}

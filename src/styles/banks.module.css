@@ -1,0 +1,42 @@
+.bank__container{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.bank__header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.bank__title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.create__bank_button{
+    width: 15%;
+    height: 40px;
+    color: white;
+    font-weight: 500;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.bank__list{
+    width: 100%;
+}
+.bank__lists{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.bank__card{
+    width: 30%;
+    height: 120px;
+    margin: 0px 30px 30px 0px;
+}

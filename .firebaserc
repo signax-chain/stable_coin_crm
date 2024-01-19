@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "signax-db"
+  },
+  "targets": {
+    "signax-db": {
+      "hosting": {
+        "main": [
+          "stable-sgx"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

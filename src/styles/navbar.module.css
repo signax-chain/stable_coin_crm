@@ -1,0 +1,51 @@
+.navbar-container{
+    width: 99%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 20px;
+}
+.space{
+    width: 50px;
+}
+.notification{
+    margin-left: 30px;
+    cursor: pointer;
+}
+.connect-wallet{
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    font-family: var(--primary-color);
+    width: 200px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+.language__list{
+    padding: 10px;
+    height: 300px;
+}
+.langauge__tile{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.langauge__tile > h3 {
+    font-size: 12px;
+    margin-left: 12px;
+    font-weight: 500;
+}
+.langauge__tile > img{
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    object-fit: contain;
+}
