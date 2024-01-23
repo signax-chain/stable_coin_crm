@@ -18,7 +18,10 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
           </div>
           <div className={styles["navbar__details"]}>
             <h3>{data.address.substring(0, 20)}...</h3>
-            <p><strong>Balance: </strong>{data.balance.toPrecision(3)}ETH</p>
+            <p>
+              <strong>Balance: </strong>
+              {data.balance.toPrecision(3)}ETH
+            </p>
           </div>
         </div>
       ) : (

@@ -1,4 +1,8 @@
 import Web3 from "web3";
+import { ethers } from "ethers";
+
+import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
+import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
 
 class WalletController {
   async connectWallet() {
@@ -21,6 +25,19 @@ class WalletController {
         isConnected: false,
       };
       return result;
+    }
+  }
+
+  async deployContract(){
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const factory = new ethers.ContractFactory(CBDCContract.abi, CBDCContract.bytecode, signer);
+      const contract = await factory.deploy();
+      console.log(contract.target);
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   }
 }
