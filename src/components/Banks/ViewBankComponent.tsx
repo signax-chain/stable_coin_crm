@@ -9,7 +9,7 @@ import GeneralCard from "../Cards/GeneralCard";
 import AddUser from "../Modals/AddUser";
 import { IUserBankRelation } from "../../models/IGeneralFormData";
 import { bankController } from "../../controllers/bank.controller";
-import LoaderContextProvider from "../../context/Loader";
+import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 export default function ViewBankComponent() {
   const params = useParams();

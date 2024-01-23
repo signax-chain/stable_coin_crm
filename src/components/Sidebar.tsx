@@ -10,7 +10,6 @@ export default function SidebarComponent(props: {
   index: number | 0;
   onChange: (i: number) => void;
 }) {
-  
   const [sidebarData, _] = useState<ISidebarItem[]>([
     {
       title: "My Dashboard",
@@ -26,18 +25,18 @@ export default function SidebarComponent(props: {
       ),
     },
     {
-        title: "Tokens Available",
-        path: "tokens",
-        icon: (index: number) => (
-          <Coins
-            className={
-              props.index !== index
-                ? styles["navigation-icon"]
-                : styles["navigation-icon-selected"]
-            }
-          />
-        ),
-      },
+      title: "Tokens Available",
+      path: "tokens",
+      icon: (index: number) => (
+        <Coins
+          className={
+            props.index !== index
+              ? styles["navigation-icon"]
+              : styles["navigation-icon-selected"]
+          }
+        />
+      ),
+    },
     {
       title: "Commerical Banks",
       path: "banks",
@@ -99,6 +98,7 @@ export default function SidebarComponent(props: {
                   : styles["navigation-bar-selected"]
               }
               onClick={() => props.onChange(index)}
+              key={index}
             >
               {sidebar.icon && sidebar.icon(index)}
               <Link to={sidebar.path!} className={styles["a"]}>

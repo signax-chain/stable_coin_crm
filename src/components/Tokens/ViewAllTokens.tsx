@@ -9,7 +9,7 @@ import { IBankDetails } from "../../models/IBankDetails";
 import { bankController } from "../../controllers/bank.controller";
 import TransferToken from "../Modals/TransferToken";
 import { ITransferTokenFormData } from "../../models/IGeneralFormData";
-import LoaderContextProvider from "../../context/Loader";
+import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 export default function ViewAllTokens() {
   const [stats, setStats] = useState<ITokenDisplay[]>([]);

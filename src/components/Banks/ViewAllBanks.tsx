@@ -11,7 +11,7 @@ import { bankController } from "../../controllers/bank.controller";
 import AddBankModal from "../Modals/AddBank";
 import { useNavigate } from "react-router-dom";
 import { localStorageController } from "../../controllers/storage.controller";
-import LoaderContextProvider from "../../context/Loader";
+import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();
