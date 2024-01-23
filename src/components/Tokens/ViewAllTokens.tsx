@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import styles from "../../styles/view_tokens.module.css";
 import { Coins, Bitcoin, Landmark } from "lucide-react";
@@ -9,6 +9,7 @@ import { IBankDetails } from "../../models/IBankDetails";
 import { bankController } from "../../controllers/bank.controller";
 import TransferToken from "../Modals/TransferToken";
 import { ITransferTokenFormData } from "../../models/IGeneralFormData";
+import LoaderContextProvider from "../../context/Loader";
 
 export default function ViewAllTokens() {
   const [stats, setStats] = useState<ITokenDisplay[]>([]);
@@ -16,8 +17,12 @@ export default function ViewAllTokens() {
   const [selectedTokenIndex, setSelectedTokenIndex] = useState(0);
   const [allBanks, setAllbanks] = useState<IBankDetails[]>([]);
   const [openCreateToken, setOpenCreateToken] = useState(false);
-
+  const { changeLoaderText, changeLoadingStatus } = useContext(
+    LoaderContextProvider
+  );
   useEffect(() => {
+    changeLoaderText("Fetching Tokens");
+    changeLoadingStatus(true);
     tokenController.getAllToken().then((value) => {
       let v: ITokenDisplay[] = [];
       for (let index = 0; index < value.length; index++) {
@@ -54,12 +59,31 @@ export default function ViewAllTokens() {
       }
       setAllbanks(allB);
     });
+    setTimeout(() => {
+      changeLoaderText("Fetching Tokens");
+      changeLoadingStatus(false);
+    }, 3000);
   }, []);
 
   const createToken = async (data: ITokenDetails) => {
     try {
+      changeLoaderText("Creating Token");
+      changeLoadingStatus(true);
       const res = await tokenController.createToken(data);
+      if(res){
+        setOpenCreateToken(false);
+        setTimeout(() => {
+          changeLoadingStatus(false);
+          alert("Token Created Successfully");
+        }, 3000);
+      }else{
+        setTimeout(() => {
+          changeLoadingStatus(false);
+          alert("Token Creation Failed");
+        }, 3000);
+      }
     } catch (error) {
+      changeLoadingStatus(false);
       alert("Token creation failed " + error);
     }
   };

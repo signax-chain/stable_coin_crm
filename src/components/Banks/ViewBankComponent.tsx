@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import styles from "../../styles/view_bank.module.css";
@@ -9,14 +9,20 @@ import GeneralCard from "../Cards/GeneralCard";
 import AddUser from "../Modals/AddUser";
 import { IUserBankRelation } from "../../models/IGeneralFormData";
 import { bankController } from "../../controllers/bank.controller";
+import LoaderContextProvider from "../../context/Loader";
 
 export default function ViewBankComponent() {
   const params = useParams();
   const [information, setInformation] = useState<IBankDetails>();
   const [allUsers, setAllUsers] = useState<IUserBankRelation[]>([]);
   const [createUserDialog, showCreateUserDialog] = useState(false);
+  const { changeLoaderText, changeLoadingStatus } = useContext(
+    LoaderContextProvider
+  );
 
   useEffect(() => {
+    changeLoaderText("Fetching All Users");
+    changeLoadingStatus(true);
     const id = params.id;
     const data = localStorageController.getBankStorage(id!);
     let bankData: IBankDetails = JSON.parse(data);
@@ -26,19 +32,28 @@ export default function ViewBankComponent() {
         .getAllUsersFromBank(bankData.bank_address)
         .then((value) => {
           setAllUsers(value);
+          setTimeout(() => {
+            changeLoadingStatus(false);
+          }, 3000);
         });
     }
   }, []);
 
   const addUserToBank = async (user: IUserBankRelation) => {
     try {
+      changeLoaderText("Add new User");
+      changeLoadingStatus(true);
       const res = await bankController.addUserAddressInfo(user);
       if (res) {
+        showCreateUserDialog(false);
+        changeLoadingStatus(false);
         alert("User Created Successfully ");
       } else {
+        changeLoadingStatus(false);
         alert("User creation failed ");
       }
     } catch (error) {
+      changeLoadingStatus(false);
       alert("Error adding user to bank " + error);
     }
   };
@@ -121,7 +136,10 @@ export default function ViewBankComponent() {
                           <td>{0}</td>
                           <td>{user.bank_id_extension}</td>
                           <td style={{ textAlign: "right" }}>
-                            <MoreVertical strokeWidth="1.6px" style={{cursor: "pointer"}} />
+                            <MoreVertical
+                              strokeWidth="1.6px"
+                              style={{ cursor: "pointer" }}
+                            />
                           </td>
                         </tr>
                       );

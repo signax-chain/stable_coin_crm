@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Coins, Landmark } from "lucide-react";
 
 import GeneralCard from "../Cards/GeneralCard";
@@ -11,13 +11,18 @@ import { bankController } from "../../controllers/bank.controller";
 import AddBankModal from "../Modals/AddBank";
 import { useNavigate } from "react-router-dom";
 import { localStorageController } from "../../controllers/storage.controller";
+import LoaderContextProvider from "../../context/Loader";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();
   const [bankData, setBankData] = useState<IBankDisplay[]>([]);
   const [openCreateBank, setOpenCreateBank] = useState(false);
-
+  const { changeLoaderText, changeLoadingStatus } = useContext(
+    LoaderContextProvider
+  );
   useEffect(() => {
+    changeLoaderText("Fetching All Banks");
+    changeLoadingStatus(true);
     bankController.getAllBanks().then((value) => {
       let v: IBankDisplay[] = [];
       for (let index = 0; index < value.length; index++) {
@@ -39,17 +44,26 @@ export default function ViewAllBankComponents() {
       }
       setBankData(v);
     });
+    setTimeout(() => {
+      changeLoadingStatus(false);
+    }, 3000);
   }, []);
 
   const createBank = async (data: IBankDetails) => {
     try {
+      changeLoaderText("Adding new bank");
+      changeLoadingStatus(true);
       const res = await bankController.createBank(data);
       if (res) {
+        setOpenCreateBank(false);
+        changeLoadingStatus(false);
         alert(`Added ${data.bank_name} successfully`);
       } else {
+        changeLoadingStatus(false);
         alert("Adding bank failed");
       }
     } catch (error) {
+      changeLoadingStatus(false);
       alert("Bank creation failed " + error);
     }
   };
@@ -59,7 +73,6 @@ export default function ViewAllBankComponents() {
       data.token_id.toString(),
       JSON.stringify(data)
     );
-    alert("Hekki");
     navigate("" + data.token_id);
   };
 
