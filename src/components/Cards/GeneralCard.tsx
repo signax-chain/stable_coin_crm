@@ -7,13 +7,18 @@ export default function GeneralCard(props: {
   subtitle: string | undefined;
   icon: ReactNode;
   children: ReactNode;
+  needAlignment: boolean;
 }) {
   return (
     <div className={styles["card__container"]}>
       <div className={styles["card__icon"]}>{props.icon}</div>
       <div className={styles["card__data"]}>
         <h3>{props.title}</h3>
-        {props.subtitle && (
+        {props.subtitle && props.needAlignment ? (
+          <p className={styles["card__sub_title"]}>
+            {props.subtitle.substring(0, props.subtitle.length - 10)}...
+          </p>
+        ) : (
           <p className={styles["card__sub_title"]}>{props.subtitle}</p>
         )}
         {props.children}

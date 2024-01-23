@@ -7,6 +7,8 @@ import { Route, Routes } from "react-router-dom";
 import DashboardComponent from "../components/Dashboard/Dashboard";
 import ViewAllTokens from "../components/Tokens/ViewAllTokens";
 import ViewAllBankComponents from "../components/Banks/ViewAllBanks";
+import ViewBank from "../components/Banks/ViewBankComponent";
+import ViewBankComponent from "../components/Banks/ViewBankComponent";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);
@@ -34,6 +36,7 @@ export default function HomeLayout() {
               <Route path="" element={<DashboardComponent />} />
               <Route path="tokens" element={<ViewAllTokens />} />
               <Route path="banks" element={<ViewAllBankComponents />} />
+              <Route path="banks/:id" element={<ViewBankComponent />} />
               <Route path="view" element={<div></div>} />
               <Route path="accounts" element={<div></div>} />
             </Routes>

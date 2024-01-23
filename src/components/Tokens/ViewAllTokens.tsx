@@ -1,37 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "../../styles/view_tokens.module.css";
 import { Coins, Bitcoin, Landmark } from "lucide-react";
 import AddToken from "../Modals/AddToken";
+import { tokenController } from "../../controllers/token.controller";
+import { ITokenDetails, ITokenDisplay } from "../../models/ITokenDetail";
+import { IBankDetails } from "../../models/IBankDetails";
+import { bankController } from "../../controllers/bank.controller";
+import TransferToken from "../Modals/TransferToken";
+import { ITransferTokenFormData } from "../../models/IGeneralFormData";
 
 export default function ViewAllTokens() {
-  const [stats, setStats] = useState([
-    {
-      title: "CBDCCoin",
-      supply: "10000",
-      supply_sent: "100",
-      icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
-    },
-    {
-      title: "CBDCCoin Version 1",
-      supply: "10000",
-      supply_sent: "6000",
-      icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
-    },
-    {
-      title: "CBDCCoin Version 2",
-      supply: "10000",
-      supply_sent: "1500",
-      icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
-    },
-    {
-      title: "CBDCCoin Version 3",
-      supply: "10000",
-      supply_sent: "1000",
-      icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
-    },
-  ]);
+  const [stats, setStats] = useState<ITokenDisplay[]>([]);
+  const [openTransferDialog, setOpenTransferDialog] = useState(false);
+  const [selectedTokenIndex, setSelectedTokenIndex] = useState(0);
+  const [allBanks, setAllbanks] = useState<IBankDetails[]>([]);
   const [openCreateToken, setOpenCreateToken] = useState(false);
+
+  useEffect(() => {
+    tokenController.getAllToken().then((value) => {
+      let v: ITokenDisplay[] = [];
+      for (let index = 0; index < value.length; index++) {
+        const element = value[index];
+        let data: ITokenDisplay = {
+          title: element.name,
+          supply: element.supply,
+          supply_sent: 0,
+          icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
+          token_details: {
+            token_id: element.token_id,
+            token_description: "",
+            token_name: element.name,
+            token_supply: element.supply,
+          },
+        };
+        v.push(data);
+      }
+      setStats(v);
+    });
+    bankController.getAllBanks().then((value) => {
+      let allB: IBankDetails[] = [];
+      for (let index = 0; index < value.length; index++) {
+        const element = value[index];
+        let data: IBankDetails = {
+          bank_address: element.bank_address,
+          token_id: element.bank_id,
+          bank_name: element.name,
+          bank_user_extension: element.extension,
+          daily_max_number_transaction: 0,
+          daily_max_transaction_amount: 0,
+        };
+        allB.push(data);
+      }
+      setAllbanks(allB);
+    });
+  }, []);
+
+  const createToken = async (data: ITokenDetails) => {
+    try {
+      const res = await tokenController.createToken(data);
+    } catch (error) {
+      alert("Token creation failed " + error);
+    }
+  };
+
+  const onTokenClick = (index: number) => {
+    setSelectedTokenIndex(index);
+    setOpenTransferDialog(true);
+  };
+
+  const onTransferToken = (e: ITransferTokenFormData) => {
+    try {
+    } catch (error) {
+      alert("Error creating token " + error);
+    }
+  };
 
   return (
     <div className={styles["view__all_tokens_container"]}>
@@ -48,7 +91,11 @@ export default function ViewAllTokens() {
         <div className={styles["view__all_token"]}>
           {stats.map((stat, index) => {
             return (
-              <div className={styles["dashboard__stat"]} key={index}>
+              <div
+                className={styles["dashboard__stat"]}
+                key={index}
+                onClick={() => onTokenClick(index)}
+              >
                 <div className={styles["dashboard__icon"]}>{stat.icon}</div>
                 <div className={styles["dashboard__stats_data"]}>
                   <h3 className={styles["dashboard__stats_title"]}>
@@ -74,7 +121,16 @@ export default function ViewAllTokens() {
         <AddToken
           isOpen={openCreateToken}
           handleClose={() => setOpenCreateToken(false)}
-          handleSubmit={() => {}}
+          handleSubmit={(e: ITokenDetails) => createToken(e)}
+        />
+      )}
+      {openTransferDialog && allBanks.length > 0 && (
+        <TransferToken
+          isOpen={openTransferDialog}
+          handleClose={() => setOpenTransferDialog(false)}
+          handleSubmit={(e: ITransferTokenFormData) => onTransferToken(e)}
+          allbanks={allBanks}
+          tokens={stats[selectedTokenIndex]}
         />
       )}
     </div>

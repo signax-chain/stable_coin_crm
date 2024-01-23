@@ -1,43 +1,67 @@
-import React, { ChangeEvent, useState } from "react";
-import { Landmark } from "lucide-react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Coins, Landmark } from "lucide-react";
 
 import GeneralCard from "../Cards/GeneralCard";
-import AddBankModal from "../Modals/AddBank";
-import { IBankDetails } from "../../models/IBankDetails";
+import { IBankDetails, IBankDisplay } from "../../models/IBankDetails";
 
 import styles from "../../styles/banks.module.css";
+import { tokenController } from "../../controllers/token.controller";
+import { ITokenDetails } from "../../models/ITokenDetail";
+import { bankController } from "../../controllers/bank.controller";
+import AddBankModal from "../Modals/AddBank";
+import { useNavigate } from "react-router-dom";
+import { localStorageController } from "../../controllers/storage.controller";
 
 export default function ViewAllBankComponents() {
-  const [bankData, setBankData] = useState([
-    {
-      title: "Commercial Bank One",
-      subtitle: "Token Supply: 10,000",
-      icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-    },
-    {
-      title: "Commercial Bank One",
-      subtitle: "Token Supply: 10,000",
-      icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-    },
-    {
-      title: "Commercial Bank One",
-      subtitle: "Token Supply: 10,000",
-      icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-    },
-    {
-      title: "Commercial Bank One",
-      subtitle: "Token Supply: 10,000",
-      icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-    },
-    {
-      title: "Commercial Bank One",
-      subtitle: "Token Supply: 10,000",
-      icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-    },
-  ]);
+  const navigate = useNavigate();
+  const [bankData, setBankData] = useState<IBankDisplay[]>([]);
   const [openCreateBank, setOpenCreateBank] = useState(false);
- 
 
+  useEffect(() => {
+    bankController.getAllBanks().then((value) => {
+      let v: IBankDisplay[] = [];
+      for (let index = 0; index < value.length; index++) {
+        const element = value[index];
+        let data: IBankDisplay = {
+          title: element.name,
+          subtitle: element.bank_address,
+          icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
+          bank_details: {
+            bank_address: element.bank_address,
+            token_id: Number(element.bank_id),
+            bank_name: element.name,
+            bank_user_extension: element.extension,
+            daily_max_number_transaction: 0,
+            daily_max_transaction_amount: 0,
+          },
+        };
+        v.push(data);
+      }
+      setBankData(v);
+    });
+  }, []);
+
+  const createBank = async (data: IBankDetails) => {
+    try {
+      const res = await bankController.createBank(data);
+      if (res) {
+        alert(`Added ${data.bank_name} successfully`);
+      } else {
+        alert("Adding bank failed");
+      }
+    } catch (error) {
+      alert("Bank creation failed " + error);
+    }
+  };
+
+  const onBankViewClick = (data: IBankDetails) => {
+    localStorageController.setBankStorage(
+      data.token_id.toString(),
+      JSON.stringify(data)
+    );
+    alert("Hekki");
+    navigate("" + data.token_id);
+  };
 
   return (
     <div className={styles["bank__container"]}>
@@ -54,13 +78,18 @@ export default function ViewAllBankComponents() {
         <div className={styles["bank__lists"]}>
           {bankData.map((bank, index) => {
             return (
-              <div className={styles["bank__card"]}>
+              <div
+                className={styles["bank__card"]}
+                key={index}
+                onClick={() => onBankViewClick(bank.bank_details)}
+              >
                 <GeneralCard
                   key={index}
                   title={bank.title}
                   subtitle={bank.subtitle}
                   icon={bank.icon}
                   children={<div></div>}
+                  needAlignment={true}
                 />
               </div>
             );
@@ -70,7 +99,7 @@ export default function ViewAllBankComponents() {
       {openCreateBank && (
         <AddBankModal
           isOpen={openCreateBank}
-          handleSubmit={() => {}}
+          handleSubmit={(e: IBankDetails) => createBank(e)}
           handleClose={() => {
             setOpenCreateBank(false);
           }}

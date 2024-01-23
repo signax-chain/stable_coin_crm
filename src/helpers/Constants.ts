@@ -1,3 +1,5 @@
+export const CONTRACT_ADDRESS = "0x29485939D6BCe990e34a2aF2AAa46D0606afF3A3";
+export const RPC_URL = "https://eth-goerli.g.alchemy.com/v2/AIB9PePeQo8z07x0qtINpDSZUZuFJbKp";
 export const allBanks = [
   "ICICI Bank Ltd",
   "Bank of Baroda",

@@ -9,7 +9,7 @@ import { IBankDetails } from "../../models/IBankDetails";
 export default function AddBankModal(props: {
   isOpen: boolean;
   handleClose: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (e: IBankDetails) => void;
 }) {
   const [createBankForm, setCreateFormData] = useState<IBankDetails>({
     token_id: +Date.now(),
@@ -120,7 +120,12 @@ export default function AddBankModal(props: {
             </form>
           </div>
           <div className={styles["add__bank_button_group"]}>
-            <button className={styles["add__bank_button"]}>Add Bank</button>
+            <button
+              className={styles["add__bank_button"]}
+              onClick={()=>props.handleSubmit(createBankForm)}
+            >
+              Add Bank
+            </button>
             <button
               className={styles["add__bank_button_cancel"]}
               onClick={props.handleClose}

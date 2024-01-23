@@ -1,0 +1,90 @@
+.transfer__token_container {
+  width: 700px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+}
+.transfer__token_heading {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.transfer__token_heading > h3 {
+  margin: 0px;
+  color: var(--primary-text-color);
+  font-size: 20px;
+}
+.transfer__token_body{
+    width: 100%;
+    margin-top: 5%;
+}
+.transfer__token_form{
+    width: 100%;
+}
+.transfer__token_row{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+.transfer__token_group{
+    width: 45%;
+    margin-right: 30px;
+}
+.transfer__token_group > p {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0px;
+    color: var(--primary-text-color);
+}
+.transfer__token_group > select {
+    width: 100%;
+    border: 1px solid var(--primary-text-color);
+    outline: none;
+    height: 50px;
+    border-radius: 5px;
+    font-family: var(--primary-font);
+    font-weight: 500;
+    padding: 10px;
+}
+.transfer__token_group > input {
+    width: 100%;
+    border: 1px solid var(--primary-text-color);
+    outline: none;
+    height: 30px;
+    border-radius: 5px;
+    font-family: var(--primary-font);
+    font-weight: 500;
+    padding: 10px;
+}
+
+.transfer__token_button_group{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 5%;
+}
+.transfer__token_button{
+    outline: none;
+    border: none;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    width: 20%;
+    margin-right: 20px;
+    cursor: pointer;
+}
+.transfer__token_button_cancel{
+    outline: none;
+    border: 1px solid var(--primary-text-color);
+    border-radius: 5px;
+    color: black;
+    background-color: transparent;
+    padding: 10px;
+    width: 20%;
+    cursor: pointer;
+}

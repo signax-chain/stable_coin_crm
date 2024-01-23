@@ -8,7 +8,7 @@ import { ITokenDetails } from "../../models/ITokenDetail";
 export default function AddToken(props: {
   isOpen: boolean;
   handleClose: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (e:ITokenDetails) => void;
 }) {
   const [createToken, setCreateToken] = useState<ITokenDetails>({
     token_id: +Date.now(),
@@ -73,6 +73,7 @@ export default function AddToken(props: {
                     type="number"
                     name="token_supply"
                     value={createToken.token_supply}
+                    onChange={inputChange}
                   />
                 </div>
                 <div className={styles["add__token_group"]}>
@@ -97,7 +98,7 @@ export default function AddToken(props: {
             </div>
           </div>
           <div className={styles["add__token_button_group"]}>
-            <button className={styles["add__token_button"]}>
+            <button className={styles["add__token_button"]} onClick={()=>props.handleSubmit(createToken)}>
               Add New Token
             </button>
             <button

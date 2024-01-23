@@ -1,0 +1,122 @@
+.view__bank__section{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.view__bank_header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.view__bank_header_1{
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.view__bank_title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.user__bank_button{
+    width: 15%;
+    height: 40px;
+    color: white;
+    font-weight: 500;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+.view__bank_information{
+    width: 100%;
+    margin-top: 30px;
+}
+.bank__stats{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.bank__details{
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.bank__icon{
+    width: 70px;
+    height: 60px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    background-image: url("../assets/textures/card-background.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+.bank__info{
+    margin-left: 20px;
+}
+.bank__info > h3 {
+    margin: 0px;
+    font-size: 25px;
+}
+.bank__info > p {
+    margin: 0px;
+    font-size: 15px;
+}
+.divider{
+    width: 4px;
+    height: 200px;
+    background-color: grey;
+    border-radius: 5px;
+}
+.bank__stat{
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap
+}
+.stat__Card{
+    width: 40%;
+    margin: 10px 20px ;
+}
+.bank__users{
+    margin-top: 30px;
+}
+.bank__users > h3 {
+    font-size: 20px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.all__bank_users{
+    width: 100%;
+    margin-top: 20px;
+}
+.bank__user_table{
+    width: 100%;
+}
+.table{
+    width: 100%;
+}
+.heading{
+    font-weight: bold;
+    text-align: left;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 10px;
+  }

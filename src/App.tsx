@@ -9,7 +9,7 @@ function App() {
      <BrowserRouter>
         <Routes>
           <Route path='/login' element={<AuthLayout />} />
-          <Route path='/*' element={<HomeLayout />} />
+          <Route path='/home/*' element={<HomeLayout />} />
         </Routes>
      </BrowserRouter>
     </div>
