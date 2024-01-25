@@ -61,22 +61,22 @@
 .transaction__table {
   width: 100%;
 }
-table,
-td,
-th {
+.transaction__table,
+.table__data,
+.table__heading {
   font-size: 12px;
   color: white;
   border-collapse: collapse;
   border: none;
 }
-th {
+.table__heading {
   text-align: left;
 }
-tr {
+.table__row {
   height: 50px;
   border-bottom: 1px solid var(--explorer-border-color);
 }
-td {
+.table__data {
   padding: 10px;
   font-weight: 300 !important;
 }

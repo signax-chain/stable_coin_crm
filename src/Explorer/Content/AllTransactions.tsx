@@ -25,27 +25,27 @@ export default function AllTransactions() {
           <div className={styles["transaction__table_content"]}>
             <table className={styles["transaction__table"]}>
               <thead>
-                <tr>
-                  <th>Txn Hash</th>
-                  <th>Method</th>
-                  <th>Timestamp</th>
-                  <th>From</th>
-                  <th>To</th>
-                  <th>Total Fee</th>
+                <tr className={styles["table__row"]}>
+                  <th className={styles["table__heading"]}>Txn Hash</th>
+                  <th className={styles["table__heading"]}>Method</th>
+                  <th className={styles["table__heading"]}>Timestamp</th>
+                  <th className={styles["table__heading"]}>From</th>
+                  <th className={styles["table__heading"]}>To</th>
+                  <th className={styles["table__heading"]}>Total Fee</th>
                 </tr>
               </thead>
               <tbody>
                 {transactionData.map((transaction, index) => {
                   return (
                     <tr key={index}>
-                      <td>{transaction.txn_hash.substring(0, 30)}...</td>
-                      <td>
+                      <td className={styles["table__data"]}>{transaction.txn_hash.substring(0, 30)}...</td>
+                      <td className={styles["table__data"]}>
                         <div className={styles["method"]}>
                           {transaction.method}
                         </div>
                       </td>
-                      <td>{transaction.time_stamp}</td>
-                      <td>
+                      <td className={styles["table__data"]}>{transaction.time_stamp}</td>
+                      <td className={styles["table__data"]}>
                         <div className={styles["table__address"]}>
                           <p>{transaction.from.substring(0, 30)}...</p>
                           <Link to={"/explorer/address/" + transaction.from}>
@@ -56,7 +56,7 @@ export default function AllTransactions() {
                           </Link>
                         </div>
                       </td>
-                      <td>
+                      <td className={styles["table__data"]}>
                         <div className={styles["table__address"]}>
                           <p>{transaction.to.substring(0, 30)}...</p>
                           <Link to={"/explorer/address/" + transaction.to}>
@@ -68,7 +68,7 @@ export default function AllTransactions() {
                           </Link>
                         </div>
                       </td>
-                      <td>{transaction.fee_involved}</td>
+                      <td className={styles["table__data"]}>{transaction.fee_involved}</td>
                     </tr>
                   );
                 })}
