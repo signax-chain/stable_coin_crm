@@ -24,7 +24,7 @@ export default function ViewBankComponent() {
     changeLoaderText("Fetching All Users");
     changeLoadingStatus(true);
     const id = params.id;
-    const data = localStorageController.getBankStorage(id!);
+    const data = localStorageController.getData(id!);
     let bankData: IBankDetails = JSON.parse(data);
     setInformation(bankData);
     if (bankData) {

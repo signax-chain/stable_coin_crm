@@ -1,9 +1,10 @@
 class LocalStorageController {
-  setBankStorage(key: string, content: string) {
+  setData(key: string, content: string) {
     window.localStorage.setItem(key, content);
+    window.dispatchEvent(new Event(key));
   }
 
-  getBankStorage(key: string): string {
+  getData(key: string): string {
     return window.localStorage.getItem(key)!;
   }
 }

@@ -27,12 +27,6 @@ contract CBDCCoin {
     //dynamic array of addresses of banks
     address[] public banks;
 
-    // creating dyanmic token
-    Tokens[] public tokens;
-
-    // creating bank array
-    BankDetails[] public allBanks;
-
     //create struct for interest deposit
     struct Deposit {
         uint256 id;
@@ -87,6 +81,12 @@ contract CBDCCoin {
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 
+    //create a dynamic token
+    mapping(address => Tokens) public addressTokens;
+
+    //create a dynamic bank
+    mapping (address => BankDetails[]) public addressBankList;
+
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
 
     event Approval(
@@ -127,7 +127,7 @@ contract CBDCCoin {
         bankNum++; //increase the number of addresses for banks
         validBankAddresses[_bankAddr] = true;
         setValidAddress(_bankAddr); //bank addresses also need to be set to true, so central bank can transfer tokens
-        allBanks.push(details);
+        addressBankList[msg.sender].push(details);
         return true;
     }
 
@@ -387,8 +387,8 @@ contract CBDCCoin {
         return true;
     }
 
-    function getAllToken() public view returns (Tokens[] memory allTokens) {
-        return tokens;
+    function getAllToken() public view returns (Tokens memory token) {
+        return addressTokens[msg.sender];
     }
 
     function createToken(
@@ -396,12 +396,19 @@ contract CBDCCoin {
         string memory _symbol,
         uint256 _initialSupply
     ) public onlyCreator returns (bool success) {
-        tokens.push(Tokens(block.timestamp, _name, _symbol, _initialSupply));
+        totalSupply += _initialSupply; //INCASE WE WANT TO ISSUE MORE TOKEN LATER
+        balanceOf[msg.sender] = totalSupply; //initialize totalSupply to the address creator
+        addressTokens[msg.sender] = Tokens(
+            block.timestamp,
+            _name,
+            _symbol,
+            _initialSupply
+        );
         return true;
     }
 
     function getAllBanks() public view returns (BankDetails[] memory bankList) {
-        return allBanks;
+        return addressBankList[msg.sender];
     }
 
     function getAllUserFromBankAddress(

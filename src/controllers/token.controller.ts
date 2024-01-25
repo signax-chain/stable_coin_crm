@@ -33,7 +33,7 @@ class TokenController {
     }
   }
 
-  async createToken(token: ITokenDetails) {
+  async createToken(token: ITokenDetails, contract_address:string) {
     try {
       let data = {
         name: token.token_name,
@@ -47,7 +47,7 @@ class TokenController {
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();
       let contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         signer
       );

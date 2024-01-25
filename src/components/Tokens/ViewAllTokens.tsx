@@ -69,7 +69,7 @@ export default function ViewAllTokens() {
     try {
       changeLoaderText("Creating Token");
       changeLoadingStatus(true);
-      const res = await tokenController.createToken(data);
+      const res = await tokenController.createToken(data, "");
       if(res){
         setOpenCreateToken(false);
         setTimeout(() => {

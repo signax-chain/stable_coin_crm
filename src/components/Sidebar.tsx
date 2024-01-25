@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Coins, Landmark, LineChart, List, LogOut, User } from "lucide-react";
+import { Landmark, LineChart, List, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { ISidebarItem } from "../models/ISidebarItem";
@@ -16,19 +16,6 @@ export default function SidebarComponent(props: {
       path: "",
       icon: (index: number) => (
         <LineChart
-          className={
-            props.index !== index
-              ? styles["navigation-icon"]
-              : styles["navigation-icon-selected"]
-          }
-        />
-      ),
-    },
-    {
-      title: "Tokens Available",
-      path: "tokens",
-      icon: (index: number) => (
-        <Coins
           className={
             props.index !== index
               ? styles["navigation-icon"]
@@ -121,3 +108,17 @@ export default function SidebarComponent(props: {
     </div>
   );
 }
+
+// {
+    //   title: "Tokens Available",
+    //   path: "tokens",
+    //   icon: (index: number) => (
+    //     <Coins
+    //       className={
+    //         props.index !== index
+    //           ? styles["navigation-icon"]
+    //           : styles["navigation-icon-selected"]
+    //       }
+    //     />
+    //   ),
+    // },

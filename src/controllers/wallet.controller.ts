@@ -34,7 +34,7 @@ class WalletController {
       const signer = await provider.getSigner();
       const factory = new ethers.ContractFactory(CBDCContract.abi, CBDCContract.bytecode, signer);
       const contract = await factory.deploy();
-      console.log(contract.target);
+      return contract.target.toString();
     } catch (error) {
       console.log(error);
       throw error;

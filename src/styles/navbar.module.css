@@ -50,8 +50,8 @@
     object-fit: contain;
 }
 .navbar__wallet_address{
-    width: 200px;
-    height: 40px;
+    width: 250px;
+    height: 55px;
     border-radius: 10px;
     border: 1px solid var(--primary-text-color);
     display: flex;
@@ -59,6 +59,9 @@
     align-items: center;
     padding: 10px;
     cursor: pointer;
+    text-align: left;
+    background-color: transparent;
+    outline: none;
 }
 .navbar__icon{
     padding: 10px;
@@ -83,4 +86,26 @@
     margin: 0px;
     font-weight: 400;
     font-size: 11px;
+}
+.verify__entity_address{
+    width: 300px;
+    height: 100px;
+    padding: 10px;
+}
+.view__user_address{
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.address{
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.address > p {
+    font-weight: 500;
+    margin: 0px 0px 0px 10px;
+    font-size: 12px;
 }

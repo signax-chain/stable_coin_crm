@@ -1,0 +1,15 @@
+.explorer__container{
+    width: 100vw;
+    height: 100vh;
+    background-color: #E7E7E7;
+    overflow-x: hidden;
+}
+.navbar__container{
+    width: 100%;
+}
+.explorer__body{
+    width: 100%;
+    height: calc(100vh - 50px);
+    background-color: var(--explorer-color);
+    position: relative;
+}

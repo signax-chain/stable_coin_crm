@@ -12,6 +12,9 @@ import AddBankModal from "../Modals/AddBank";
 import { useNavigate } from "react-router-dom";
 import { localStorageController } from "../../controllers/storage.controller";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
+import AccountContextProvider from "../../context/AccountContextProvider";
+import { walletController } from "../../controllers/wallet.controller";
+import { IWalletData } from "../../models/IGeneralFormData";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();
@@ -49,6 +52,39 @@ export default function ViewAllBankComponents() {
     }, 3000);
   }, []);
 
+  const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
+    AccountContextProvider
+  );
+
+  const connectWallet = async () => {
+    const res = await walletController.connectWallet();
+    if (res.isConnected) {
+      changeLogInStatus(res.isConnected);
+      let data = {
+        address: res.address?.toString()!,
+        balance: Number(res.balance),
+      };
+      changeContent(data);
+      let content:IWalletData = {
+        isLoggedIn: res.isConnected,
+        data: data,
+      }
+      localStorageController.setData("wallet", JSON.stringify(content));
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="no__data_container">
+        <h3>
+          Click on the <strong>connect wallet button</strong> to log in to your
+          wallet
+        </h3>
+        <button onClick={() => connectWallet()}>Connect Wallet</button>
+      </div>
+    );
+  }
+
   const createBank = async (data: IBankDetails) => {
     try {
       changeLoaderText("Adding new bank");
@@ -69,7 +105,7 @@ export default function ViewAllBankComponents() {
   };
 
   const onBankViewClick = (data: IBankDetails) => {
-    localStorageController.setBankStorage(
+    localStorageController.setData(
       data.token_id.toString(),
       JSON.stringify(data)
     );

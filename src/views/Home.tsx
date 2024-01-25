@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "../styles/home.module.css";
 import SidebarComponent from "../components/Sidebar";
@@ -13,6 +13,8 @@ import LoaderContextProvider from "../context/LoaderContextProvider";
 import Loader from "../components/Modals/Loader";
 import { walletController } from "../controllers/wallet.controller";
 import AccountContextProvider from "../context/AccountContextProvider";
+import { localStorageController } from "../controllers/storage.controller";
+import { IWalletData } from "../models/IGeneralFormData";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);
@@ -24,15 +26,34 @@ export default function HomeLayout() {
     setSelectedSidebarIndex(index);
   };
 
+  useEffect(() => {
+    getDataFromLocalStorage();
+    window.addEventListener("wallet", () => getDataFromLocalStorage);
+  }, []);
+
+  const getDataFromLocalStorage = () => {
+    const localStorageData = localStorageController.getData("wallet");
+    if (localStorageData) {
+      const data: IWalletData = JSON.parse(localStorageData);
+      setIsConnected(data.isLoggedIn);
+      setLoggedInData(data.data);
+    }
+  };
+
   const connectWallet = async () => {
     const res = await walletController.connectWallet();
-    if(res.isConnected){
+    if (res.isConnected) {
       setIsConnected(res.isConnected);
       let data = {
         address: res.address?.toString()!,
         balance: Number(res.balance),
-      }
+      };
       setLoggedInData(data);
+      let content: IWalletData = {
+        isLoggedIn: res.isConnected,
+        data: data,
+      };
+      localStorageController.setData("wallet", JSON.stringify(content));
     }
   };
 
@@ -64,7 +85,7 @@ export default function HomeLayout() {
             </div>
             <div className={styles["main-content"]}>
               {/* Navbar content */}
-              <NavbarComponent onConnect={()=>connectWallet()} />
+              <NavbarComponent onConnect={() => connectWallet()} />
               <div className={styles["module-content"]}>
                 {/* Main module content */}
                 <Routes>
@@ -72,8 +93,34 @@ export default function HomeLayout() {
                   <Route path="tokens" element={<ViewAllTokens />} />
                   <Route path="banks" element={<ViewAllBankComponents />} />
                   <Route path="banks/:id" element={<ViewBankComponent />} />
-                  <Route path="view" element={<div></div>} />
-                  <Route path="accounts" element={<div></div>} />
+                  <Route
+                    path="view"
+                    element={
+                      <div className="no__data_container">
+                        <h3>
+                          Click on the <strong>connect wallet button</strong> to
+                          log in to your wallet
+                        </h3>
+                        <button onClick={() => connectWallet()}>
+                          Connect Wallet
+                        </button>
+                      </div>
+                    }
+                  />
+                  <Route
+                    path="accounts"
+                    element={
+                      <div className="no__data_container">
+                        <h3>
+                          Click on the <strong>connect wallet button</strong> to
+                          log in to your wallet
+                        </h3>
+                        <button onClick={() => connectWallet()}>
+                          Connect Wallet
+                        </button>
+                      </div>
+                    }
+                  />
                 </Routes>
               </div>
             </div>
