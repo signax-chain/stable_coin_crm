@@ -14,10 +14,11 @@ import {
 import GeneralCard from "../../components/Cards/GeneralCard";
 import { transactionController } from "../Controller/transaction.controller";
 import { ITransaction } from "../Models/ITransaction";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function IndexLayout() {
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     transactionController.getAllTransaction().then((data) => {
@@ -132,10 +133,10 @@ export default function IndexLayout() {
                 );
               })}
             </div>
-            <div className={styles["transaction__footer"]}>
+            <Link to="transactions" className={styles["transaction__footer"]}>
               <p>View All Transaction</p>
               <MoveRight color="white" />
-            </div>
+            </Link>
           </div>
         </div>
       </div>

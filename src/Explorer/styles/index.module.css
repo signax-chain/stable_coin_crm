@@ -133,6 +133,7 @@ input:focus{
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    text-decoration: none;
 }
 .transaction__footer > p {
     color: white;

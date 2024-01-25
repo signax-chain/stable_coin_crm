@@ -4,6 +4,7 @@ import styles from "../styles/explorer.module.css";
 import PortalNavbar from "./Navbar/PortalNavbar";
 import { Route, Routes } from "react-router-dom";
 import IndexLayout from "./Content/Index";
+import AllTransactions from "./Content/AllTransactions";
 
 export default function Explorer() {
   return (
@@ -14,6 +15,8 @@ export default function Explorer() {
       <div className={styles["explorer__body"]}>
         <Routes>
           <Route path="" element={<IndexLayout />} />
+          <Route path="transactions" element={<AllTransactions />} />
+          <Route path="address/:id" element={<AllTransactions />} />
         </Routes>
       </div>
     </div>

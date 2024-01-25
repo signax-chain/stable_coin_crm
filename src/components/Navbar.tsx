@@ -1,11 +1,11 @@
 import React, { ChangeEvent, useContext } from "react";
 import Popover from "@mui/material/Popover";
-import { Bell, Copy, Globe, User, Wallet } from "lucide-react";
+import { Bell, Copy, ExternalLink, Globe, User, Wallet } from "lucide-react";
 import { Badge } from "@mui/material";
 
 import styles from "../styles/navbar.module.css";
 import AccountContextProvider from "../context/AccountContextProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { localStorageController } from "../controllers/storage.controller";
 import { copyToClipboard } from "../helpers/GeneralFunc";
 import { toast } from "react-toastify";
@@ -95,12 +95,9 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
               </div>
               <p>{data.address.substring(0, 28)}...</p>
             </div>
-            <Copy
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                clipBoardCopy(data.address.toString(), "Wallet Address")
-              }
-            />
+            <Link to={"/explorer/address/" + data.address}>
+              <ExternalLink style={{ cursor: "pointer" }} />
+            </Link>
           </div>
           <div className={styles["view__user_address"]}>
             <div className={styles["address"]}>
