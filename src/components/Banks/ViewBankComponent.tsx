@@ -11,15 +11,24 @@ import { bankController } from "../../controllers/bank.controller";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 import styles from "../../styles/view_bank.module.css";
+import { useTranslation } from "../../context/TranslatorContextProvider";
 
 export default function ViewBankComponent() {
   const params = useParams();
+  const { translate, language } = useTranslation();
   const [information, setInformation] = useState<IBankDetails>();
   const [allUsers, setAllUsers] = useState<IUserBankRelation[]>([]);
   const [createUserDialog, showCreateUserDialog] = useState(false);
   const { changeLoaderText, changeLoadingStatus } = useContext(
     LoaderContextProvider
   );
+  const [dynamicTitles, setDynamicTitle] = useState({
+    title_1: "View Bank Information",
+    title_2: "Add a User",
+    title_3: "Total User",
+    title_4: "Total Tokens",
+    title_5: "All Available Users",
+  });
 
   useEffect(() => {
     changeLoaderText("Fetching All Users");
@@ -39,6 +48,24 @@ export default function ViewBankComponent() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      try {
+        const data = {
+          title_1: await translate(dynamicTitles.title_1, language),
+          title_2: await translate(dynamicTitles.title_2, language),
+          title_3: await translate(dynamicTitles.title_3, language),
+          title_4: await translate(dynamicTitles.title_4, language),
+          title_5: await translate(dynamicTitles.title_5, language),
+        };
+        setDynamicTitle(data);
+      } catch (error) {
+        console.error("Error fetching translation:", error);
+      }
+    };
+    fetchTranslation();
+  }, [language]);
 
   const addUserToBank = async (user: IUserBankRelation) => {
     try {
@@ -63,13 +90,13 @@ export default function ViewBankComponent() {
     <section className={styles["view__bank__section"]}>
       <div className={styles["view__bank_header"]}>
         <div className={styles["view__bank_header_1"]}>
-          <h1 className={styles["view__bank_title"]}>View Bank Information</h1>
+          <h1 className={styles["view__bank_title"]}>{dynamicTitles.title_1}</h1>
         </div>
         <button
           className={styles["user__bank_button"]}
           onClick={() => showCreateUserDialog(true)}
         >
-          Add a User
+          {dynamicTitles.title_2}
         </button>
       </div>
       <div className={styles["view__bank_information"]}>
@@ -95,7 +122,7 @@ export default function ViewBankComponent() {
           <div className={styles["bank__stat"]}>
             <div className={styles["stat__Card"]}>
               <GeneralCard
-                title="Total User"
+                title={dynamicTitles.title_3}
                 subtitle="100 Users"
                 icon={<User size={30} color="white" />}
                 children={<div></div>}
@@ -104,7 +131,7 @@ export default function ViewBankComponent() {
             </div>
             <div className={styles["stat__Card"]}>
               <GeneralCard
-                title="Total Tokens"
+                title={dynamicTitles.title_4}
                 subtitle="1000"
                 icon={<User size={30} color="white" />}
                 children={<div></div>}
@@ -114,7 +141,7 @@ export default function ViewBankComponent() {
           </div>
         </div>
         <div className={styles["bank__users"]}>
-          <h3>All Available Users</h3>
+          <h3>{dynamicTitles.title_5}</h3>
           <div className={styles["all__bank_users"]}>
             {allUsers.length > 0 && (
               <div className={styles["bank__user_table"]}>

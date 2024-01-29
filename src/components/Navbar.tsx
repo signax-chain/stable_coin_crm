@@ -19,6 +19,7 @@ import { copyToClipboard } from "../helpers/GeneralFunc";
 import { countryWithLanguages } from "../helpers/Constants";
 
 import styles from "../styles/navbar.module.css";
+import { useTranslation } from "../context/TranslatorContextProvider";
 
 export default function NavbarComponent(props: { onConnect: () => void }) {
   const { isLoggedIn, data } = useContext(AccountContextProvider);
@@ -33,8 +34,9 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
+  
   const navigate = useNavigate();
+  const { language, setLanguage } = useTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -57,6 +59,11 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
     if (res) {
       toast(`${type} copied to your clipboard`);
     }
+  };
+
+
+  const handleLanguageChange = (selectedLanguage: string) => {
+    setLanguage(selectedLanguage);
   };
 
   return (
@@ -95,7 +102,7 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
         onClick={() => navigateToExplorer()}
       />
       <Badge
-        badgeContent={"En"}
+        badgeContent={language}
         color="warning"
         aria-describedby={languageModelId}
         onClick={handleLanguageClick}
@@ -172,7 +179,7 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
               <div
                 key={index}
                 className={styles["langauge__tile"]}
-                onClick={() => {}}
+                onClick={() => handleLanguageChange(language.languages[0])}
               >
                 <img
                   src={`https://flagsapi.com/${language.alpha2Code}/shiny/64`}

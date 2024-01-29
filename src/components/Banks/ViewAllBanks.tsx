@@ -1,4 +1,4 @@
-import React, {  useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Landmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,14 +13,18 @@ import { walletController } from "../../controllers/wallet.controller";
 import { IWalletData } from "../../models/IGeneralFormData";
 
 import styles from "../../styles/banks.module.css";
+import { useTranslation } from "../../context/TranslatorContextProvider";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();
+  const { translate, language } = useTranslation();
   const [bankData, setBankData] = useState<IBankDisplay[]>([]);
   const [openCreateBank, setOpenCreateBank] = useState(false);
   const { changeLoaderText, changeLoadingStatus } = useContext(
     LoaderContextProvider
   );
+  const [translateText, setTranslatedText] = useState("View All Banks");
+
   useEffect(() => {
     changeLoaderText("Fetching All Banks");
     changeLoadingStatus(true);
@@ -50,6 +54,18 @@ export default function ViewAllBankComponents() {
     }, 3000);
   }, []);
 
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      try {
+        const result = await translate(translateText, language);
+        setTranslatedText(result);
+      } catch (error) {
+        console.error("Error fetching translation:", error);
+      }
+    };
+    fetchTranslation();
+  }, [language]);
+
   const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
     AccountContextProvider
   );
@@ -63,10 +79,10 @@ export default function ViewAllBankComponents() {
         balance: Number(res.balance),
       };
       changeContent(data);
-      let content:IWalletData = {
+      let content: IWalletData = {
         isLoggedIn: res.isConnected,
         data: data,
-      }
+      };
       localStorageController.setData("wallet", JSON.stringify(content));
     }
   };
@@ -113,7 +129,7 @@ export default function ViewAllBankComponents() {
   return (
     <div className={styles["bank__container"]}>
       <div className={styles["bank__header"]}>
-        <h1 className={styles["bank__title"]}>View All Banks</h1>
+        <h1 className={styles["bank__title"]}>{translateText}</h1>
         <button
           className={styles["create__bank_button"]}
           onClick={() => setOpenCreateBank(true)}

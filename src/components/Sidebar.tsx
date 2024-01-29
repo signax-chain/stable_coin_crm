@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Landmark, LineChart, List, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { ISidebarItem } from "../models/ISidebarItem";
 
 import styles from "../styles/sidebar.module.css";
+import { useTranslation } from "../context/TranslatorContextProvider";
 
 export default function SidebarComponent(props: {
   index: number | 0;
   onChange: (i: number) => void;
 }) {
-  const [sidebarData, _] = useState<ISidebarItem[]>([
+  const { translate, language } = useTranslation();
+  const [sidebarData, setSidebarData] = useState<ISidebarItem[]>([
     {
       title: "My Dashboard",
       path: "",
@@ -69,6 +71,72 @@ export default function SidebarComponent(props: {
       icon: (index: number) => <LogOut className={styles["navigation-icon"]} />,
     },
   ]);
+
+  useEffect(() => {
+    async function generateData(){
+      let data  = [
+        {
+          title: await translate("My Dashboard"),
+          path: "",
+          icon: (index: number) => (
+            <LineChart
+              className={
+                props.index !== index
+                  ? styles["navigation-icon"]
+                  : styles["navigation-icon-selected"]
+              }
+            />
+          ),
+        },
+        {
+          title: await translate("Commercial Banks"),
+          path: "banks",
+          icon: (index: number) => (
+            <Landmark
+              className={
+                props.index !== index
+                  ? styles["navigation-icon"]
+                  : styles["navigation-icon-selected"]
+              }
+            />
+          ),
+        },
+        {
+          title: await translate("View Transactions"),
+          path: "/explorer/transactions",
+          icon: (index: number) => (
+            <List
+              className={
+                props.index !== index
+                  ? styles["navigation-icon"]
+                  : styles["navigation-icon-selected"]
+              }
+            />
+          ),
+        },
+        {
+          title: await translate("My Accounts"),
+          path: "account",
+          icon: (index: number) => (
+            <User
+              className={
+                props.index !== index
+                  ? styles["navigation-icon"]
+                  : styles["navigation-icon-selected"]
+              }
+            />
+          ),
+        },
+        {
+          title: await translate("Logout"),
+          path: "",
+          icon: (index: number) => <LogOut className={styles["navigation-icon"]} />,
+        },
+      ];
+      setSidebarData(data);
+    }
+    generateData();
+  }, [language]);
 
   return (
     <div className={styles["sidebar-container"]}>

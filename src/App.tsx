@@ -6,19 +6,22 @@ import "react-toastify/dist/ReactToastify.css";
 import AuthLayout from "./views/Auth";
 import HomeLayout from "./views/Home";
 import Explorer from "./Explorer/Explorer";
+import { TranslationProvider } from "./context/TranslatorContextProvider";
 
 function App() {
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AuthLayout />} />
-          <Route path="/home/*" element={<HomeLayout />} />
-          <Route path="/explorer/*" element={<Explorer />} />
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer />
-    </div>
+    <TranslationProvider>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<AuthLayout />} />
+            <Route path="/home/*" element={<HomeLayout />} />
+            <Route path="/explorer/*" element={<Explorer />} />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer />
+      </div>
+    </TranslationProvider>
   );
 }
 

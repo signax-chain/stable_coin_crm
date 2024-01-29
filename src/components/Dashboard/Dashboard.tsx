@@ -13,6 +13,7 @@ import AddToken from "../Modals/AddToken";
 import GradientInformationCard from "../Cards/GradientCard";
 
 import styles from "../../styles/dashboard.module.css";
+import { useTranslation } from "../../context/TranslatorContextProvider";
 
 export default function DashboardComponent() {
   const [stats, _] = useState<IInformationStats[]>([
@@ -143,6 +144,7 @@ export default function DashboardComponent() {
       ],
     },
   ]);
+  const { translate, language } = useTranslation();
   const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
     AccountContextProvider
   );
@@ -151,6 +153,22 @@ export default function DashboardComponent() {
     LoaderContextProvider
   );
   const [openCreateToken, setOpenCreateToken] = useState(false);
+  const [translatedText, setTranslatedText] = useState<string | null>(null);
+  const dynamicText = "Central Bank Dashboard";
+
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      try {
+        const result = await translate(dynamicText, language);
+        setTranslatedText(result);
+      } catch (error) {
+        console.error('Error fetching translation:', error);
+      }
+    };
+
+    fetchTranslation();
+  }, [language]);
+
 
   useEffect(() => {
     getContractAddress();
@@ -257,7 +275,7 @@ export default function DashboardComponent() {
       }}
     >
       <div className={styles["dashboard-container"]}>
-        <h1 className={styles["dashboard-title"]}>Central Bank Dashboard</h1>
+        <h1 className={styles["dashboard-title"]}>{translatedText}</h1>
         <div className={styles["dashboard__stats"]}>
           <div className={styles["dashboard__basic_stats"]}>
             {stats.map((stat, index) => {
