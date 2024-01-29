@@ -1,12 +1,12 @@
 import { Dialog } from "@mui/material";
 import React, { ChangeEvent, useState } from "react";
 
-import styles from "../../styles/modals/transfer_token.module.css";
 import { XCircle } from "lucide-react";
 import { IBankDetails } from "../../models/IBankDetails";
-import { ITokenDetails, ITokenDisplay } from "../../models/ITokenDetail";
-import { allBanks } from "../../helpers/Constants";
+import {  ITokenDisplay } from "../../models/ITokenDetail";
 import { ITransferTokenFormData } from "../../models/IGeneralFormData";
+
+import styles from "../../styles/modals/transfer_token.module.css";
 
 export default function TransferToken(props: {
   isOpen: boolean;

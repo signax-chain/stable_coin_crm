@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Coins } from "lucide-react";
 
-import styles from "../../styles/view_tokens.module.css";
-import { Coins, Bitcoin, Landmark } from "lucide-react";
 import AddToken from "../Modals/AddToken";
 import { tokenController } from "../../controllers/token.controller";
 import { ITokenDetails, ITokenDisplay } from "../../models/ITokenDetail";
@@ -10,6 +9,8 @@ import { bankController } from "../../controllers/bank.controller";
 import TransferToken from "../Modals/TransferToken";
 import { ITransferTokenFormData } from "../../models/IGeneralFormData";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
+
+import styles from "../../styles/view_tokens.module.css";
 
 export default function ViewAllTokens() {
   const [stats, setStats] = useState<ITokenDisplay[]>([]);

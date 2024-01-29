@@ -39,7 +39,7 @@ export default function SidebarComponent(props: {
     },
     {
       title: "View Transactions",
-      path: "view",
+      path: "/explorer/transactions",
       icon: (index: number) => (
         <List
           className={

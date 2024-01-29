@@ -22,11 +22,6 @@ export default function AddToken(props: {
     setCreateToken({ ...createToken, [name]: value });
   };
 
-  const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value, name } = e.target;
-    setCreateToken({ ...createToken, [name]: value });
-  };
-
   const onTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value, name } = e.target;
     setCreateToken({ ...createToken, [name]: value });

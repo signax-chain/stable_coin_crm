@@ -1,7 +1,6 @@
 import Web3 from "web3";
 import { ethers } from "ethers";
 
-import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
 
 class WalletController {

@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
-import { ITokenDetails } from "../models/ITokenDetail";
 import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
 import { IBankDetails } from "../models/IBankDetails";
 import { IUserBankRelation } from "../models/IGeneralFormData";

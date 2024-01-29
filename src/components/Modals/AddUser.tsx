@@ -1,9 +1,11 @@
 import React, { ChangeEvent, useState } from "react";
+import { XCircle } from "lucide-react";
+import { Dialog } from "@mui/material";
+
 import { IUserBankRelation } from "../../models/IGeneralFormData";
 import { IBankDetails } from "../../models/IBankDetails";
-import { Dialog } from "@mui/material";
+
 import styles from "../../styles/modals/add_user.module.css";
-import { XCircle } from "lucide-react";
 
 export default function AddUser(props: {
   isOpen: boolean;
@@ -20,11 +22,6 @@ export default function AddUser(props: {
   });
 
   const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setFormInput({ ...formInput, [name]: value });
-  };
-
-  const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = e.target;
     setFormInput({ ...formInput, [name]: value });
   };

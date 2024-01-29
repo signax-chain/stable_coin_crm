@@ -1,26 +1,47 @@
-import React, { ChangeEvent, useContext } from "react";
+import React, {  useContext } from "react";
 import Popover from "@mui/material/Popover";
-import { Bell, Copy, ExternalLink, Globe, User, Wallet } from "lucide-react";
+import {
+  Bell,
+  Copy,
+  ExternalLink,
+  Globe,
+  Languages,
+  User,
+  Wallet,
+} from "lucide-react";
 import { Badge } from "@mui/material";
-
-import styles from "../styles/navbar.module.css";
-import AccountContextProvider from "../context/AccountContextProvider";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import AccountContextProvider from "../context/AccountContextProvider";
 import { localStorageController } from "../controllers/storage.controller";
 import { copyToClipboard } from "../helpers/GeneralFunc";
-import { toast } from "react-toastify";
+import { countryWithLanguages } from "../helpers/Constants";
+
+import styles from "../styles/navbar.module.css";
 
 export default function NavbarComponent(props: { onConnect: () => void }) {
   const { isLoggedIn, data } = useContext(AccountContextProvider);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [languageEl, setLanguageEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+  const isLanguageOpen = Boolean(languageEl);
+  const languageModelId = isLanguageOpen ? "simple-popover" : undefined;
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
   const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleLanguageClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setLanguageEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -73,6 +94,14 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
         className={styles["notification"]}
         onClick={() => navigateToExplorer()}
       />
+      <Badge
+        badgeContent={"En"}
+        color="warning"
+        aria-describedby={languageModelId}
+        onClick={handleLanguageClick}
+      >
+        <Languages className={styles["notification"]} />
+      </Badge>
       <Badge badgeContent={0} color="success">
         <Bell className={styles["notification"]} />
       </Badge>
@@ -87,40 +116,71 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
           horizontal: "left",
         }}
       >
-        <div className={styles["verify__entity_address"]}>
-          <div className={styles["view__user_address"]}>
-            <div className={styles["address"]}>
-              <div className={styles["navbar__icon"]}>
-                <User color="white" size={20} strokeWidth="2.5px" />
+        {isLoggedIn && (
+          <div className={styles["verify__entity_address"]}>
+            <div className={styles["view__user_address"]}>
+              <div className={styles["address"]}>
+                <div className={styles["navbar__icon"]}>
+                  <User color="white" size={20} strokeWidth="2.5px" />
+                </div>
+                <p>{data.address.substring(0, 28)}...</p>
               </div>
-              <p>{data.address.substring(0, 28)}...</p>
+              <Link to={"/explorer/address/" + data.address}>
+                <ExternalLink style={{ cursor: "pointer" }} />
+              </Link>
             </div>
-            <Link to={"/explorer/address/" + data.address}>
-              <ExternalLink style={{ cursor: "pointer" }} />
-            </Link>
-          </div>
-          <div className={styles["view__user_address"]}>
-            <div className={styles["address"]}>
-              <div className={styles["navbar__icon"]}>
-                <User color="white" size={20} strokeWidth="2.5px" />
+            <div className={styles["view__user_address"]}>
+              <div className={styles["address"]}>
+                <div className={styles["navbar__icon"]}>
+                  <User color="white" size={20} strokeWidth="2.5px" />
+                </div>
+                <p>
+                  {localStorageController
+                    .getData("contract_address")
+                    .substring(0, 28)}
+                  ...
+                </p>
               </div>
-              <p>
-                {localStorageController
-                  .getData("contract_address")
-                  .substring(0, 28)}
-                ...
-              </p>
+              <Copy
+                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  clipBoardCopy(
+                    localStorageController
+                      .getData("contract_address")
+                      .toString(),
+                    "Contract Address"
+                  )
+                }
+              />
             </div>
-            <Copy
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                clipBoardCopy(
-                  localStorageController.getData("contract_address").toString(),
-                  "Contract Address"
-                )
-              }
-            />
           </div>
+        )}
+      </Popover>
+      <Popover
+        id={languageModelId}
+        open={isLanguageOpen}
+        anchorEl={languageEl}
+        onClose={() => setLanguageEl(null)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <div className={styles["language__list"]}>
+          {countryWithLanguages.map((language, index) => {
+            return (
+              <div
+                key={index}
+                className={styles["langauge__tile"]}
+                onClick={() => {}}
+              >
+                <img
+                  src={`https://flagsapi.com/${language.alpha2Code}/shiny/64`}
+                />
+                <h3>{language.name}</h3>
+              </div>
+            );
+          })}
         </div>
       </Popover>
     </div>

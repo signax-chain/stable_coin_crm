@@ -1,20 +1,18 @@
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Coins, Landmark } from "lucide-react";
+import React, {  useContext, useEffect, useState } from "react";
+import { Landmark } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import GeneralCard from "../Cards/GeneralCard";
 import { IBankDetails, IBankDisplay } from "../../models/IBankDetails";
-
-import styles from "../../styles/banks.module.css";
-import { tokenController } from "../../controllers/token.controller";
-import { ITokenDetails } from "../../models/ITokenDetail";
 import { bankController } from "../../controllers/bank.controller";
 import AddBankModal from "../Modals/AddBank";
-import { useNavigate } from "react-router-dom";
 import { localStorageController } from "../../controllers/storage.controller";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 import AccountContextProvider from "../../context/AccountContextProvider";
 import { walletController } from "../../controllers/wallet.controller";
 import { IWalletData } from "../../models/IGeneralFormData";
+
+import styles from "../../styles/banks.module.css";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();

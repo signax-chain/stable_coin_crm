@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Copy, Landmark, MoreVertical, User } from "lucide-react";
 
-import styles from "../../styles/view_bank.module.css";
 import { IBankDetails } from "../../models/IBankDetails";
 import { localStorageController } from "../../controllers/storage.controller";
-import { Copy, Landmark, MoreVertical, User } from "lucide-react";
 import GeneralCard from "../Cards/GeneralCard";
 import AddUser from "../Modals/AddUser";
 import { IUserBankRelation } from "../../models/IGeneralFormData";
 import { bankController } from "../../controllers/bank.controller";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
+
+import styles from "../../styles/view_bank.module.css";
 
 export default function ViewBankComponent() {
   const params = useParams();

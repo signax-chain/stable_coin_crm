@@ -18,3 +18,9 @@ export interface IWalletData {
     balance: number;
   };
 }
+
+export interface IInformationStats {
+  title: string;
+  content: string;
+  footer: IInformationStats[],
+}

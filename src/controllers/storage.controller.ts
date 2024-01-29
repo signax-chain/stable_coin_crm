@@ -5,7 +5,7 @@ class LocalStorageController {
   }
 
   getData(key: string): string {
-    return window.localStorage.getItem(key)!;
+    return window.localStorage.getItem(key) ?? "";
   }
 }
 export const localStorageController = new LocalStorageController();

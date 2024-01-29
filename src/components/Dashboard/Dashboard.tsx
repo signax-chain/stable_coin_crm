@@ -1,34 +1,146 @@
 import React, { useContext, useEffect, useState } from "react";
-
-import styles from "../../styles/dashboard.module.css";
-import { Bitcoin, Coins, Landmark, Wallet } from "lucide-react";
 import { LineChart } from "@mui/x-charts";
+
 import AccountContextProvider from "../../context/AccountContextProvider";
 import { walletController } from "../../controllers/wallet.controller";
-import { IWalletData } from "../../models/IGeneralFormData";
+import { IInformationStats, IWalletData } from "../../models/IGeneralFormData";
 import { localStorageController } from "../../controllers/storage.controller";
 import ContractContextProvider from "../../context/ContractContextProvider";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 import { tokenController } from "../../controllers/token.controller";
 import { ITokenDetails } from "../../models/ITokenDetail";
 import AddToken from "../Modals/AddToken";
+import GradientInformationCard from "../Cards/GradientCard";
+
+import styles from "../../styles/dashboard.module.css";
 
 export default function DashboardComponent() {
-  const [stats, _] = useState([
+  const [stats, _] = useState<IInformationStats[]>([
     {
       title: "Available Tokens",
-      subtitle: "10 tokens",
-      icon: <Coins color="white" size={70} strokeWidth="1.5px" />,
+      content: "1",
+      footer: [
+        {
+          title: "Country",
+          content: "India",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Success",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Goods",
+          footer: [],
+        },
+      ],
     },
     {
-      title: "Total Token Supply",
-      subtitle: "$10,0000",
-      icon: <Bitcoin color="white" size={70} strokeWidth="1.5px" />,
+      title: "Total Supply",
+      content: "$15,300",
+      footer: [
+        {
+          title: "Country",
+          content: "Italy",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Success",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Services",
+          footer: [],
+        },
+      ],
     },
     {
       title: "Available Banks",
-      subtitle: "20 Commercial Bank",
-      icon: <Landmark color="white" size={70} strokeWidth="1.5px" />,
+      content: "10",
+      footer: [
+        {
+          title: "Country",
+          content: "Canada",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Scheduled",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Goods",
+          footer: [],
+        },
+      ],
+    },
+    {
+      title: "Total Users",
+      content: "100",
+      footer: [
+        {
+          title: "Country",
+          content: "Canada",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Scheduled",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Goods",
+          footer: [],
+        },
+      ],
+    },
+    {
+      title: "Transactions per month",
+      content: "1000",
+      footer: [
+        {
+          title: "Country",
+          content: "Canada",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Scheduled",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Goods",
+          footer: [],
+        },
+      ],
+    },
+    {
+      title: "Available Banks",
+      content: "10",
+      footer: [
+        {
+          title: "Country",
+          content: "Canada",
+          footer: [],
+        },
+        {
+          title: "Status",
+          content: "Scheduled",
+          footer: [],
+        },
+        {
+          title: "Type",
+          content: "Goods",
+          footer: [],
+        },
+      ],
     },
   ]);
   const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
@@ -150,16 +262,8 @@ export default function DashboardComponent() {
           <div className={styles["dashboard__basic_stats"]}>
             {stats.map((stat, index) => {
               return (
-                <div className={styles["dashboard__stat"]} key={index}>
-                  <div className={styles["dashboard__icon"]}>{stat.icon}</div>
-                  <div className={styles["dashboard__stats_data"]}>
-                    <h3 className={styles["dashboard__stats_title"]}>
-                      {stat.title}
-                    </h3>
-                    <h4 className={styles["dashboard__stats_subtitle"]}>
-                      {stat.subtitle}
-                    </h4>
-                  </div>
+                <div className={styles["dashboard__card"]}>
+                  <GradientInformationCard data={stat} />
                 </div>
               );
             })}

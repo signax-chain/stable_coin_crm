@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 
-import styles from "../styles/home.module.css";
 import SidebarComponent from "../components/Sidebar";
 import NavbarComponent from "../components/Navbar";
-import { Route, Routes } from "react-router-dom";
 import DashboardComponent from "../components/Dashboard/Dashboard";
 import ViewAllTokens from "../components/Tokens/ViewAllTokens";
 import ViewAllBankComponents from "../components/Banks/ViewAllBanks";
-import ViewBank from "../components/Banks/ViewBankComponent";
 import ViewBankComponent from "../components/Banks/ViewBankComponent";
 import LoaderContextProvider from "../context/LoaderContextProvider";
 import Loader from "../components/Modals/Loader";
@@ -15,6 +13,8 @@ import { walletController } from "../controllers/wallet.controller";
 import AccountContextProvider from "../context/AccountContextProvider";
 import { localStorageController } from "../controllers/storage.controller";
 import { IWalletData } from "../models/IGeneralFormData";
+
+import styles from "../styles/home.module.css";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);
@@ -42,6 +42,7 @@ export default function HomeLayout() {
 
   const connectWallet = async () => {
     const res = await walletController.connectWallet();
+    console.log(res.isConnected);
     if (res.isConnected) {
       setIsConnected(res.isConnected);
       let data = {

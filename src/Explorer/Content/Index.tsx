@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-
-import styles from "../styles/index.module.css";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  ArrowBigLeft,
   ArrowRightCircle,
   Coins,
   ExternalLink,
@@ -11,10 +9,12 @@ import {
   MoveRight,
   Search,
 } from "lucide-react";
+
 import GeneralCard from "../../components/Cards/GeneralCard";
 import { transactionController } from "../Controller/transaction.controller";
 import { ITransaction } from "../Models/ITransaction";
-import { Link, useNavigate } from "react-router-dom";
+
+import styles from "../styles/index.module.css";
 
 export default function IndexLayout() {
   const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
