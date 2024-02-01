@@ -56,3 +56,17 @@ button {
   color: white;
   cursor: pointer;
 }
+
+input{
+  font-family: var(--primary-font);
+}
+
+button{
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.navigation-icon {
+  color: black;
+  margin-right: 20px;
+}

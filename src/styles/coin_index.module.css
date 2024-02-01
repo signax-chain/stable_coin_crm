@@ -1,0 +1,43 @@
+.coin__index_container{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.coin__index_title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.coin__index_heading{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mint__heading_button{
+    width: 15%;
+    height: 40px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+}
+.coin__index_content{
+    width: 100%;
+}
+.coin__index_content{
+    width: 100%;
+}
+.coin__stats{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.coin__card{
+    width: 30%;
+    height: 130px;
+    margin: 10px;
+
+}

@@ -3,7 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 
 import { XCircle } from "lucide-react";
 import { IBankDetails } from "../../models/IBankDetails";
-import {  ITokenDisplay } from "../../models/ITokenDetail";
+import { ITokenDetails, ITokenDisplay } from "../../models/ITokenDetail";
 import { ITransferTokenFormData } from "../../models/IGeneralFormData";
 
 import styles from "../../styles/modals/transfer_token.module.css";
@@ -11,13 +11,13 @@ import styles from "../../styles/modals/transfer_token.module.css";
 export default function TransferToken(props: {
   isOpen: boolean;
   handleClose: () => void;
-  handleSubmit: (e:ITransferTokenFormData) => void;
+  handleSubmit: (e: ITransferTokenFormData) => void;
   allbanks: IBankDetails[];
-  tokens: ITokenDisplay;
+  tokens: ITokenDetails;
 }) {
   const [formData, setFormData] = useState<ITransferTokenFormData>({
-    token_name: props.tokens.title,
-    total_supply: props.tokens.supply,
+    token_name: props.tokens.token_name,
+    total_supply: props.tokens.token_supply,
     bank_address: "",
     supply_to_be_sent: 0,
   });
@@ -51,7 +51,7 @@ export default function TransferToken(props: {
                   <p>Token Name</p>
                   <input
                     name="token_name"
-                    value={props.tokens.title}
+                    value={props.tokens.token_name}
                     readOnly
                     disabled
                   />
@@ -60,7 +60,8 @@ export default function TransferToken(props: {
                   <p>Total Token Supply</p>
                   <input
                     name="token_supply"
-                    value={props.tokens.supply}
+                    value={Number(props.tokens.token_supply)}
+                    type="number"
                     readOnly
                     disabled
                   />
@@ -96,6 +97,9 @@ export default function TransferToken(props: {
                     type="number"
                     onChange={inputChange}
                   />
+                  {parseFloat(formData.supply_to_be_sent.toString()) > parseFloat(props.tokens.token_supply.toString()) && (
+                    <span style={{fontSize: "12px", color: "red"}}>Cannot be more then total supply</span>
+                  )}
                 </div>
               </div>
             </form>

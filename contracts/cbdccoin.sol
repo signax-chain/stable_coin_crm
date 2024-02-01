@@ -24,6 +24,8 @@ contract CBDCCoin {
     //create a state variable to record totalDeposits so far
     uint256 public depositCount = 0; //constructor INITIALISATION
 
+    uint256 public centralBank = 0;
+
     //dynamic array of addresses of banks
     address[] public banks;
 
@@ -66,6 +68,15 @@ contract CBDCCoin {
         string bank_address;
     }
 
+    struct CentralBankDetails {
+        address smart_contract_address;
+        address bank_user_address;
+        uint256 token_supply;
+        string token_name;
+        string token_symbol;
+    }
+
+    CentralBankDetails[] public centralBankList;
     //create a dynamic array of user AccountInfo mapping with accounts number for listing valid user accounts later
     mapping(uint256 => AccountInfo) public accountDetailsById;
     mapping(address => AccountInfo) public accountDetailsByAddr;
@@ -85,7 +96,9 @@ contract CBDCCoin {
     mapping(address => Tokens) public addressTokens;
 
     //create a dynamic bank
-    mapping (address => BankDetails[]) public addressBankList;
+    mapping(address => BankDetails[]) public addressBankList;
+
+    mapping(address => uint256) public requestedTokens;
 
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
 
@@ -102,6 +115,9 @@ contract CBDCCoin {
         string _iddata,
         uint256 _idnum
     );
+
+    event TokensRequested(address indexed requester, uint256 tokens);
+    event TokensIssued(address indexed requester, uint256 tokens);
 
     constructor() {
         creator = msg.sender; //the one who deploys the contract will be the owner/creator
@@ -220,7 +236,6 @@ contract CBDCCoin {
         //transfer the balance
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value;
-
         // transfer event
         emit Transfer(msg.sender, _to, _value);
 
@@ -242,6 +257,7 @@ contract CBDCCoin {
     ) public onlyCreator returns (bool success) {
         totalSupply += _quantity;
         balanceOf[creator] += _quantity;
+        centralBankList[0].token_supply += _quantity;
         return true;
     }
 
@@ -387,14 +403,17 @@ contract CBDCCoin {
         return true;
     }
 
-    function getAllToken() public view returns (Tokens memory token) {
-        return addressTokens[msg.sender];
+    function getAllToken(
+        address bank_address
+    ) public view returns (Tokens memory token) {
+        return addressTokens[bank_address];
     }
 
     function createToken(
         string memory _name,
         string memory _symbol,
-        uint256 _initialSupply
+        uint256 _initialSupply,
+        CentralBankDetails memory bankDetails
     ) public onlyCreator returns (bool success) {
         totalSupply += _initialSupply; //INCASE WE WANT TO ISSUE MORE TOKEN LATER
         balanceOf[msg.sender] = totalSupply; //initialize totalSupply to the address creator
@@ -404,16 +423,68 @@ contract CBDCCoin {
             _symbol,
             _initialSupply
         );
+        centralBank++;
+        centralBankList.push(bankDetails);
         return true;
     }
 
-    function getAllBanks() public view returns (BankDetails[] memory bankList) {
-        return addressBankList[msg.sender];
+    function getAllBanks(
+        address bank_address
+    ) public view returns (BankDetails[] memory bankList) {
+        return addressBankList[bank_address];
     }
 
     function getAllUserFromBankAddress(
         address bankAddress
     ) public view returns (AccountInfo[] memory info) {
         return accountDetailsByBankId[bankAddress];
+    }
+
+    function getAllCentralBankData()
+        public
+        view
+        returns (CentralBankDetails[] memory allCentralBanks)
+    {
+        return centralBankList;
+    }
+
+    function getBalanceOf(
+        address _address
+    ) public view returns (uint256 _price) {
+        return balanceOf[_address];
+    }
+
+    function requestTokens(
+        address _requester,
+        uint256 _tokens
+    ) public returns (bool success) {
+        require(
+            validAddresses[_requester] == true,
+            "Requester address is not validated"
+        );
+        require(_tokens > 0, "Requested token quantity must be greater than 0");
+
+        // Update requestedTokens mapping
+        requestedTokens[_requester] = _tokens;
+
+        emit TokensRequested(_requester, _tokens);
+        return true;
+    }
+
+    function approveTokens(
+        address _requester
+    ) public onlyCreator returns (bool success) {
+        uint256 requestedAmount = requestedTokens[_requester];
+        require(requestedAmount > 0, "No tokens requested by the address");
+
+        // Transfer tokens to the requester
+        balanceOf[creator] = balanceOf[creator].sub(requestedAmount);
+        balanceOf[_requester] = balanceOf[_requester].add(requestedAmount);
+
+        // Clear the requestedTokens mapping
+        requestedTokens[_requester] = 0;
+
+        emit TokensIssued(_requester, requestedAmount);
+        return true;
     }
 }

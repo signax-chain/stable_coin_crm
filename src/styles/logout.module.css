@@ -1,0 +1,16 @@
+.logout__component{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.logout__component > p {
+    margin: 0px;
+}
+
+.logout__component > span {
+    font-size: 12px;
+}

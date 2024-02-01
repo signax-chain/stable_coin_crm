@@ -18,6 +18,7 @@ export default function AddBankModal(props: {
     bank_user_extension: "",
     daily_max_transaction_amount: 0,
     daily_max_number_transaction: 0,
+    supply: 0,
   });
 
   const inputChange = (e: ChangeEvent<HTMLInputElement>) => {

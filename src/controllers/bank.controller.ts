@@ -2,27 +2,39 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
 import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
-import { IBankDetails } from "../models/IBankDetails";
-import { IUserBankRelation } from "../models/IGeneralFormData";
+import { IBankDetails, ICentralBankDetails } from "../models/IBankDetails";
+import { IUserBankRelation, IWalletData } from "../models/IGeneralFormData";
+import { localStorageController } from "./storage.controller";
 
 class BankController {
-  async getAllBanks() {
+  async getAllBanks(): Promise<IBankDetails[]> {
     try {
-      const allToken = [];
+      const address = localStorageController.getData("wallet");
+      if (!address) {
+        return [];
+      }
+      const allToken: IBankDetails[] = [];
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         CBDCContract.abi,
         provider
       );
-      const data = await contract.getAllBanks();
+
+      const walletData: IWalletData = JSON.parse(address);
+      const data = await contract.getAllBanks(walletData!.data.address, {
+        sender: walletData!.data.address,
+      });
       for (let index = 0; index < data.length; index++) {
         const element = data[index];
-        let d = {
-          bank_id: element.bank_id,
-          name: element.name,
-          extension: element.extension,
+        let d: IBankDetails = {
+          token_id: element.bank_id,
+          bank_name: element.name,
+          bank_user_extension: element.extension,
           bank_address: element.bank_address,
+          daily_max_transaction_amount: 0,
+          daily_max_number_transaction: 0,
+          supply: 0,
         };
         allToken.push(d);
       }
@@ -115,6 +127,59 @@ class BankController {
         allUsers.push(d);
       }
       return allUsers;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getBalanceOf(
+    bank_address: string,
+    contract_address: string
+  ): Promise<number> {
+    try {
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      let contract = new ethers.Contract(
+        contract_address,
+        CBDCContract.abi,
+        signer
+      );
+      let data = await contract.getBalanceOf(bank_address);
+      return Number(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllCentralBankData(
+    contract_address: string
+  ): Promise<ICentralBankDetails[]> {
+    try {
+      let allCentralBank: ICentralBankDetails[] = [];
+      const web3Modal = new Web3Modal();
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      let contract = new ethers.Contract(
+        contract_address,
+        CBDCContract.abi,
+        signer
+      );
+      let data = await contract.getAllCentralBankData();
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        let centralBank: ICentralBankDetails = {
+          smart_contract_address: element[0],
+          bank_user_address: element[1],
+          token_name: element[3],
+          token_supply: element[2],
+          token_symbol: element[4],
+        };
+        allCentralBank.push(centralBank);
+      }
+      return allCentralBank;
     } catch (error) {
       throw error;
     }

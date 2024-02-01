@@ -1,0 +1,33 @@
+.platform__user_content{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}
+.platform__user_heading{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.platform__user_title{
+    font-size: 30px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+}
+.platform__user_list{
+    width: 100%;
+}
+.platform__user_list{
+    width: 100%;
+}
+.table{
+    width: 100%;
+}
+.table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  th, td {
+    padding: 10px;
+  }

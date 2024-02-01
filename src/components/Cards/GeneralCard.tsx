@@ -16,7 +16,12 @@ export default function GeneralCard(props: {
         <h3>{props.title}</h3>
         {props.subtitle && props.needAlignment ? (
           <p className={styles["card__sub_title"]}>
-            {props.subtitle.substring(0, props.subtitle.length - 10)}...
+            {props.subtitle.length > 30
+              ? `${props.subtitle.substring(
+                  0,
+                  props.subtitle.length - 10
+                )} ....`
+              : props.subtitle}
           </p>
         ) : (
           <p className={styles["card__sub_title"]}>{props.subtitle}</p>

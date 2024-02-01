@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0x29485939D6BCe990e34a2aF2AAa46D0606afF3A3";
+export const CONTRACT_ADDRESS = "0x7B827DF7B13456914C6cC054bf61AB00f647a159";
 export const RPC_URL = "https://eth-goerli.g.alchemy.com/v2/AIB9PePeQo8z07x0qtINpDSZUZuFJbKp";
 export const allBanks = [
   "ICICI Bank Ltd",

@@ -123,7 +123,7 @@ export default function ViewBankComponent() {
             <div className={styles["stat__Card"]}>
               <GeneralCard
                 title={dynamicTitles.title_3}
-                subtitle="100 Users"
+                subtitle={`${allUsers.length} Users`}
                 icon={<User size={30} color="white" />}
                 children={<div></div>}
                 needAlignment={false}
@@ -132,7 +132,7 @@ export default function ViewBankComponent() {
             <div className={styles["stat__Card"]}>
               <GeneralCard
                 title={dynamicTitles.title_4}
-                subtitle="1000"
+                subtitle={`${information?.supply} Tokens`}
                 icon={<User size={30} color="white" />}
                 children={<div></div>}
                 needAlignment={false}

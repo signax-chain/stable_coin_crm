@@ -14,6 +14,7 @@ import { IWalletData } from "../../models/IGeneralFormData";
 
 import styles from "../../styles/banks.module.css";
 import { useTranslation } from "../../context/TranslatorContextProvider";
+import { CONTRACT_ADDRESS } from "../../helpers/Constants";
 
 export default function ViewAllBankComponents() {
   const navigate = useNavigate();
@@ -24,34 +25,15 @@ export default function ViewAllBankComponents() {
     LoaderContextProvider
   );
   const [translateText, setTranslatedText] = useState("View All Banks");
+  const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
+    AccountContextProvider
+  );
 
   useEffect(() => {
-    changeLoaderText("Fetching All Banks");
-    changeLoadingStatus(true);
-    bankController.getAllBanks().then((value) => {
-      let v: IBankDisplay[] = [];
-      for (let index = 0; index < value.length; index++) {
-        const element = value[index];
-        let data: IBankDisplay = {
-          title: element.name,
-          subtitle: element.bank_address,
-          icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
-          bank_details: {
-            bank_address: element.bank_address,
-            token_id: Number(element.bank_id),
-            bank_name: element.name,
-            bank_user_extension: element.extension,
-            daily_max_number_transaction: 0,
-            daily_max_transaction_amount: 0,
-          },
-        };
-        v.push(data);
-      }
-      setBankData(v);
-    });
-    setTimeout(() => {
-      changeLoadingStatus(false);
-    }, 3000);
+    async function getBanks() {
+      await getAllBanksAvailable();
+    }
+    getBanks();
   }, []);
 
   useEffect(() => {
@@ -66,9 +48,38 @@ export default function ViewAllBankComponents() {
     fetchTranslation();
   }, [language]);
 
-  const { isLoggedIn, changeContent, changeLogInStatus } = useContext(
-    AccountContextProvider
-  );
+  const getAllBanksAvailable = async () => {
+    changeLoaderText("Fetching All Banks");
+    changeLoadingStatus(true);
+    bankController.getAllBanks().then(async (value) => {
+      let v: IBankDisplay[] = [];
+      for (let index = 0; index < value.length; index++) {
+        const element = value[index];
+        const balance = await bankController.getBalanceOf(element.bank_address, CONTRACT_ADDRESS);
+        let data: IBankDisplay = {
+          title: element.bank_name,
+          subtitle: element.bank_address,
+          icon: <Landmark color="white" size={40} strokeWidth="1.5px" />,
+          supply: balance,
+          bank_details: {
+            bank_address: element.bank_address,
+            token_id: Number(element.token_id),
+            bank_name: element.bank_name,
+            bank_user_extension: element.bank_user_extension,
+            daily_max_number_transaction: 0,
+            daily_max_transaction_amount: 0,
+            supply: balance,
+          },
+        };
+        console.log(data)
+        v.push(data);
+      }
+      setBankData(v);
+    });
+    setTimeout(() => {
+      changeLoadingStatus(false);
+    }, 3000);
+  };
 
   const connectWallet = async () => {
     const res = await walletController.connectWallet();
@@ -107,6 +118,7 @@ export default function ViewAllBankComponents() {
       if (res) {
         setOpenCreateBank(false);
         changeLoadingStatus(false);
+        await getAllBanksAvailable();
         alert(`Added ${data.bank_name} successfully`);
       } else {
         changeLoadingStatus(false);
@@ -125,6 +137,26 @@ export default function ViewAllBankComponents() {
     );
     navigate("" + data.token_id);
   };
+
+  if (bankData.length === 0) {
+    return (
+      <div className="no__data_container">
+        <h3>
+          No Banks Added. Click on <strong>add bank</strong>.
+        </h3>
+        <button onClick={() => setOpenCreateBank(true)}>Add a Bank</button>
+        {openCreateBank && (
+          <AddBankModal
+            isOpen={openCreateBank}
+            handleSubmit={(e: IBankDetails) => createBank(e)}
+            handleClose={() => {
+              setOpenCreateBank(false);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={styles["bank__container"]}>
@@ -149,7 +181,7 @@ export default function ViewAllBankComponents() {
                 <GeneralCard
                   key={index}
                   title={bank.title}
-                  subtitle={bank.subtitle}
+                  subtitle={`Available Tokens: ${bank.supply}`}
                   icon={bank.icon}
                   children={<div></div>}
                   needAlignment={true}

@@ -1,4 +1,4 @@
-import React, {  useContext } from "react";
+import React, { useContext } from "react";
 import Popover from "@mui/material/Popover";
 import {
   Bell,
@@ -9,7 +9,7 @@ import {
   User,
   Wallet,
 } from "lucide-react";
-import { Badge } from "@mui/material";
+import { Avatar, Badge } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -20,6 +20,7 @@ import { countryWithLanguages } from "../helpers/Constants";
 
 import styles from "../styles/navbar.module.css";
 import { useTranslation } from "../context/TranslatorContextProvider";
+import { useRoleFinder } from "../context/RoleContextProvider";
 
 export default function NavbarComponent(props: { onConnect: () => void }) {
   const { isLoggedIn, data } = useContext(AccountContextProvider);
@@ -34,8 +35,9 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  
+
   const navigate = useNavigate();
+  const { userInformation } = useRoleFinder();
   const { language, setLanguage } = useTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +62,6 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
       toast(`${type} copied to your clipboard`);
     }
   };
-
 
   const handleLanguageChange = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
@@ -111,6 +112,17 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
       </Badge>
       <Badge badgeContent={0} color="success">
         <Bell className={styles["notification"]} />
+      </Badge>
+      <Badge
+        badgeContent={"New"}
+        color="success"
+        style={{ marginLeft: "30px" }}
+      >
+        {userInformation ? (
+          <Avatar sx={{ bgcolor: "var(--primary-color)" }}>{userInformation.name[0]}</Avatar>
+        ) : (
+          <Avatar sx={{ bgcolor: "var(--primary-color)" }}>S</Avatar>
+        )}
       </Badge>
       <div style={{ marginRight: "30px" }}></div>
       <Popover

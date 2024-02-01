@@ -11,6 +11,7 @@ import { ITransferTokenFormData } from "../../models/IGeneralFormData";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 import styles from "../../styles/view_tokens.module.css";
+import AccountContextProvider from "../../context/AccountContextProvider";
 
 export default function ViewAllTokens() {
   const [stats, setStats] = useState<ITokenDisplay[]>([]);
@@ -21,13 +22,14 @@ export default function ViewAllTokens() {
   const { changeLoaderText, changeLoadingStatus } = useContext(
     LoaderContextProvider
   );
+  const {data} = useContext(AccountContextProvider);
   useEffect(() => {
     changeLoaderText("Fetching Tokens");
     changeLoadingStatus(true);
-    tokenController.getAllToken().then((value) => {
+    tokenController.getAllToken(data.address).then((value) => {
       let v: ITokenDisplay[] = [];
-      for (let index = 0; index < value.length; index++) {
-        const element = value[index];
+      for (let index = 0; index < value!.length; index++) {
+        const element = value![index];
         let data: ITokenDisplay = {
           title: element.name,
           supply: element.supply,
@@ -50,11 +52,12 @@ export default function ViewAllTokens() {
         const element = value[index];
         let data: IBankDetails = {
           bank_address: element.bank_address,
-          token_id: element.bank_id,
-          bank_name: element.name,
-          bank_user_extension: element.extension,
+          token_id: element.token_id,
+          bank_name: element.bank_name,
+          bank_user_extension: element.bank_name,
           daily_max_number_transaction: 0,
           daily_max_transaction_amount: 0,
+          supply: 0,
         };
         allB.push(data);
       }
@@ -70,7 +73,7 @@ export default function ViewAllTokens() {
     try {
       changeLoaderText("Creating Token");
       changeLoadingStatus(true);
-      const res = await tokenController.createToken(data, "");
+      const res = await tokenController.createToken(data, "", "");
       if(res){
         setOpenCreateToken(false);
         setTimeout(() => {
@@ -92,13 +95,6 @@ export default function ViewAllTokens() {
   const onTokenClick = (index: number) => {
     setSelectedTokenIndex(index);
     setOpenTransferDialog(true);
-  };
-
-  const onTransferToken = (e: ITransferTokenFormData) => {
-    try {
-    } catch (error) {
-      alert("Error creating token " + error);
-    }
   };
 
   return (
@@ -147,15 +143,6 @@ export default function ViewAllTokens() {
           isOpen={openCreateToken}
           handleClose={() => setOpenCreateToken(false)}
           handleSubmit={(e: ITokenDetails) => createToken(e)}
-        />
-      )}
-      {openTransferDialog && allBanks.length > 0 && (
-        <TransferToken
-          isOpen={openTransferDialog}
-          handleClose={() => setOpenTransferDialog(false)}
-          handleSubmit={(e: ITransferTokenFormData) => onTransferToken(e)}
-          allbanks={allBanks}
-          tokens={stats[selectedTokenIndex]}
         />
       )}
     </div>

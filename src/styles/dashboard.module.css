@@ -3,6 +3,22 @@
     height: 100%;
     padding: 10px 0px 20px 20px;
 }
+.dashboard__heading{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dashboard__heading > button {
+    width: 15%;
+    height: 40px;
+    border: none;
+    outline: none;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
 .dashboard-title{
     font-size: 30px;
     color: var(--primary-text-color);
@@ -17,7 +33,7 @@
 }
 .dashboard__card{
     width: 30%;
-    height: 150px;
+    height: 120px;
     margin-bottom: 5%;
 }
 .dashboard__stat{
