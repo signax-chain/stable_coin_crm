@@ -75,3 +75,8 @@
 .line-chart{
     font-family: var(--secondary-font) !important;
 }
+.stepper__compo_main{
+    width: 95%;
+    height: 100%;
+    padding: 10px 0px 20px 20px;
+}

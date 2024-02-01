@@ -3,7 +3,11 @@ import { LineChart } from "@mui/x-charts";
 
 import AccountContextProvider from "../../context/AccountContextProvider";
 import { walletController } from "../../controllers/wallet.controller";
-import { IInformationStats, ITransferTokenFormData, IWalletData } from "../../models/IGeneralFormData";
+import {
+  IInformationStats,
+  ITransferTokenFormData,
+  IWalletData,
+} from "../../models/IGeneralFormData";
 import { localStorageController } from "../../controllers/storage.controller";
 import ContractContextProvider from "../../context/ContractContextProvider";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
@@ -21,6 +25,7 @@ import TransferToken from "../Modals/TransferToken";
 import { toast } from "react-toastify";
 import { userController } from "../../controllers/user.controller";
 import { useRoleFinder } from "../../context/RoleContextProvider";
+import StepperComponent from "./StepperComponent";
 
 export default function DashboardComponent() {
   const [stats, setStats] = useState<IInformationStats[]>([
@@ -69,7 +74,8 @@ export default function DashboardComponent() {
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [allBanks, setAllBanks] = useState<IBankDetails[]>([]);
   const [openTransferTokenModal, setOpenTransferTokenModal] = useState(false);
-  const {userInformation, setUserInformation} = useRoleFinder();
+  const { userInformation, setUserInformation } = useRoleFinder();
+  const [currentStep, setCurrentStep] = useState(1);
   const dynamicText = "Central Bank Dashboard";
 
   useEffect(() => {
@@ -95,7 +101,10 @@ export default function DashboardComponent() {
       changeLoadingStatus(true);
       const data: IWalletData = JSON.parse(address);
       const tokenData = await tokenController.getAllToken(data!.data.address);
-      const balance = await bankController.getBalanceOf(data!.data.address, CONTRACT_ADDRESS);
+      const balance = await bankController.getBalanceOf(
+        data!.data.address,
+        CONTRACT_ADDRESS
+      );
       const allBanks = await bankController.getAllBanks();
       if (tokenData.length) {
         let token: ITokenDetails = {
@@ -187,9 +196,9 @@ export default function DashboardComponent() {
   const connectWallet = async () => {
     const res = await walletController.connectWallet();
     if (res.isConnected) {
-      let userData = {...userInformation};
+      let userData = { ...userInformation };
       userData.address = res.address!;
-      await userController.updateUserDetails( userData.user_id! , userData);
+      await userController.updateUserDetails(userData.user_id!, userData);
       changeLogInStatus(res.isConnected);
       let data = {
         address: res.address?.toString()!,
@@ -234,11 +243,11 @@ export default function DashboardComponent() {
 
   const onTransferToken = async (e: ITransferTokenFormData) => {
     try {
-      changeLoaderText("Transfering Token to "+e.bank_address);
+      changeLoaderText("Transfering Token to " + e.bank_address);
       changeLoadingStatus(true);
       const response = await tokenController.transfer(e);
-      if(response){
-        toast("Token transfered to "+e.bank_address);
+      if (response) {
+        toast("Token transfered to " + e.bank_address);
         setTimeout(() => {
           changeLoadingStatus(false);
           window.location.reload();
@@ -248,6 +257,14 @@ export default function DashboardComponent() {
       alert("Error creating token " + error);
     }
   };
+
+  if (!isLoggedIn || tokensAvailable === undefined) {
+    return (
+      <div className={styles["stepper__compo_main"]}>
+        <StepperComponent currentStep={currentStep} changeStep={() => {}} />
+      </div>
+    );
+  }
 
   if (!isLoggedIn || tokensAvailable === undefined) {
     return (
@@ -290,7 +307,9 @@ export default function DashboardComponent() {
     <div className={styles["dashboard-container"]}>
       <div className={styles["dashboard__heading"]}>
         <h1 className={styles["dashboard-title"]}>{translatedText}</h1>
-        <button onClick={()=>setOpenTransferTokenModal(true)}>Transfer Token</button>
+        <button onClick={() => setOpenTransferTokenModal(true)}>
+          Transfer Token
+        </button>
       </div>
       <div className={styles["dashboard__stats"]}>
         <div className={styles["dashboard__basic_stats"]}>
