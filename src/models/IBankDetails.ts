@@ -26,3 +26,10 @@ export interface ICentralBankDetails {
   token_name: string;
   token_symbol: string;
 }
+export interface IBankDatabaseDetails {
+  creator: string;
+  smart_contract_address: string;
+  bank_details: IBankDetails;
+  created_at: Date,
+  updated_at: Date,
+}

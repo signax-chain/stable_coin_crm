@@ -2,7 +2,7 @@ import React, { useEffect }  from "react";
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import { authController } from "../controllers/auth.controller";
+import { authController } from "../controllers/database/auth.controller";
 
 import styles from "../styles/logout.module.css";
 

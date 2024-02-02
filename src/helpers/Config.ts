@@ -51,13 +51,11 @@ const firebaseAuth = getAuth(firebaseApp);
 const analytics = getAnalytics(firebaseApp);
 
 // ACCESSING FIREBASE DOCS
-const rolesRef: CollectionReference = collection(firebaseDB, "roles");
 const userRef: CollectionReference = collection(firebaseDB, "users");
-const categoryRef: CollectionReference = collection(firebaseDB, "categories");
-const accountCollectionRef: CollectionReference = collection(firebaseDB, "accounts");
-const tokenCreationRef: CollectionReference = collection(firebaseDB, "token_creations");
-
-
+const contractRef: CollectionReference = collection(firebaseDB, "contract_user_collections");
+const bankRef: CollectionReference = collection(firebaseDB, "contract_bank_collections");
+const notificationRef: CollectionReference = collection(firebaseDB, "notifications");
+const notificationUserRef: CollectionReference = collection(firebaseDB, "notification_user_collections");
 
 export {
   firebaseAuth,
@@ -86,9 +84,9 @@ export {
   getDownloadURL,
   uploadBytesResumable,
   getMetadata,
-  rolesRef,
   userRef,
-  categoryRef,
-  accountCollectionRef,
-  tokenCreationRef
+  contractRef,
+  bankRef,
+  notificationRef,
+  notificationUserRef,
 };

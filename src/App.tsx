@@ -17,10 +17,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [loaderText, setLoaderText] = useState("");
 
-  useEffect(()=>{
-    localStorageController.setData("contract_address", CONTRACT_ADDRESS);
-  }, [])
-
   return (
     <LoaderContextProvider.Provider
       value={{

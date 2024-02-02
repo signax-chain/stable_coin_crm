@@ -57,7 +57,7 @@ export const CentralBankNavbarData: ISidebarItem[] = [
   },
   {
     title: "Logout",
-    path: "",
+    path: "logout",
     icon: <LogOut className="navigation-icon" />,
   },
 ];

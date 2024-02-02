@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import styles from "../../styles/platform-user.module.css";
 import { IUserDetails } from "../../models/IUserDetails";
-import { userController } from "../../controllers/user.controller";
+import { userController } from "../../controllers/database/user.controller";
 import { useRoleFinder } from "../../context/RoleContextProvider";
 import { MoreVertical } from "lucide-react";
 

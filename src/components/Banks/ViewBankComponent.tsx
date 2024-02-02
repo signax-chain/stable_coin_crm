@@ -12,6 +12,7 @@ import LoaderContextProvider from "../../context/LoaderContextProvider";
 
 import styles from "../../styles/view_bank.module.css";
 import { useTranslation } from "../../context/TranslatorContextProvider";
+import { useRoleFinder } from "../../context/RoleContextProvider";
 
 export default function ViewBankComponent() {
   const params = useParams();
@@ -29,6 +30,7 @@ export default function ViewBankComponent() {
     title_4: "Total Tokens",
     title_5: "All Available Users",
   });
+  const {role} = useRoleFinder();
 
   useEffect(() => {
     changeLoaderText("Fetching All Users");
@@ -92,12 +94,12 @@ export default function ViewBankComponent() {
         <div className={styles["view__bank_header_1"]}>
           <h1 className={styles["view__bank_title"]}>{dynamicTitles.title_1}</h1>
         </div>
-        <button
+        { role.role === "bank" && <button
           className={styles["user__bank_button"]}
           onClick={() => showCreateUserDialog(true)}
         >
           {dynamicTitles.title_2}
-        </button>
+        </button>}
       </div>
       <div className={styles["view__bank_information"]}>
         <div className={styles["bank__stats"]}>

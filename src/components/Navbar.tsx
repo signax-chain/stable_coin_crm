@@ -22,7 +22,10 @@ import styles from "../styles/navbar.module.css";
 import { useTranslation } from "../context/TranslatorContextProvider";
 import { useRoleFinder } from "../context/RoleContextProvider";
 
-export default function NavbarComponent(props: { onConnect: () => void }) {
+export default function NavbarComponent(props: {
+  onConnect: () => void;
+  notificationLength: number | 0;
+}) {
   const { isLoggedIn, data } = useContext(AccountContextProvider);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -110,8 +113,10 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
       >
         <Languages className={styles["notification"]} />
       </Badge>
-      <Badge badgeContent={0} color="success">
-        <Bell className={styles["notification"]} />
+      <Badge badgeContent={props.notificationLength} color="success">
+        <Link to="notifications">
+          <Bell className={styles["notification"]} />
+        </Link>
       </Badge>
       <Badge
         badgeContent={"New"}
@@ -119,7 +124,9 @@ export default function NavbarComponent(props: { onConnect: () => void }) {
         style={{ marginLeft: "30px" }}
       >
         {userInformation ? (
-          <Avatar sx={{ bgcolor: "var(--primary-color)" }}>{userInformation.name[0]}</Avatar>
+          <Avatar sx={{ bgcolor: "var(--primary-color)" }}>
+            {userInformation.name[0]}
+          </Avatar>
         ) : (
           <Avatar sx={{ bgcolor: "var(--primary-color)" }}>S</Avatar>
         )}

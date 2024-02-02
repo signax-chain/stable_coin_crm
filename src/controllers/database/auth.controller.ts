@@ -8,9 +8,9 @@ import {
   addDoc,
   setDoc,
   signOut,
-} from "../helpers/Config";
-import { IAuthResponse } from "../models/IGeneralResponse";
-import { IUserDetails } from "../models/IUserDetails";
+} from "../../helpers/Config";
+import { IAuthResponse } from "../../models/IGeneralResponse";
+import { IUserDetails } from "../../models/IUserDetails";
 
 class AuthController {
   async login(email: string, password: string): Promise<IAuthResponse> {

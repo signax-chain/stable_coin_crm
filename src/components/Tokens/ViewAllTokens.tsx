@@ -46,7 +46,7 @@ export default function ViewAllTokens() {
       }
       setStats(v);
     });
-    bankController.getAllBanks().then((value) => {
+    bankController.getAllBanks(undefined).then((value) => {
       let allB: IBankDetails[] = [];
       for (let index = 0; index < value.length; index++) {
         const element = value[index];

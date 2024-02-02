@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import GoogleLogo from "../assets/logo/google.png";
 import Logo from "../assets/logo/logo.png";
@@ -9,9 +10,8 @@ import { sortArrayAscending } from "../helpers/Country";
 import LoaderContextProvider from "../context/LoaderContextProvider";
 import { IUserDetails } from "../models/IUserDetails";
 import { firebaseAuth, onAuthStateChanged } from "../helpers/Config";
-import { toast } from "react-toastify";
-import { authController } from "../controllers/auth.controller";
-import { RoleProvider, useRoleFinder } from "../context/RoleContextProvider";
+import { authController } from "../controllers/database/auth.controller";
+import { useRoleFinder } from "../context/RoleContextProvider";
 
 import styles from "../styles/auth.module.css";
 

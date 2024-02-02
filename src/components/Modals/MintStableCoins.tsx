@@ -5,15 +5,18 @@ import { IBankDetails, ICentralBankDetails } from "../../models/IBankDetails";
 
 import styles from "../../styles/modals/mint_stable_coin.module.css";
 import { XCircle } from "lucide-react";
+import { IContractDatabaseDetails } from "../../models/IContractDetails";
+import { allBanks } from "../../helpers/Constants";
 
 export default function MintStableCoinModal(props: {
   isOpen: boolean;
-  allBanks: ICentralBankDetails[];
+  allBanks: IContractDatabaseDetails[];
   handleClose: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (e: IContractDatabaseDetails) => void;
 }) {
   const [selectedSupply, setSelectedSupply] = useState(0);
   const [selectedContractAddress, setSelectedContractAddress] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   return (
     <div>
@@ -37,13 +40,19 @@ export default function MintStableCoinModal(props: {
                     const { value } = e.target;
                     setSelectedSupply(Number(value.split("_")[1]));
                     setSelectedContractAddress(value.split("_")[0]);
+                    setSelectedIndex(Number(value.split("_")[2]));
                   }}
                 >
                   <option value={`0_0`}>Select Token</option>
                   {props.allBanks.map((bank, index) => {
                     return (
-                      <option key={index} value={`${bank.smart_contract_address}_${Number(bank.token_supply)}`}>
-                        {bank.token_name}
+                      <option
+                        key={index}
+                        value={`${bank.contract_address}_${Number(
+                          bank.token_details.token_supply
+                        )}_${index}`}
+                      >
+                        {bank.token_details.token_name}
                       </option>
                     );
                   })}
@@ -64,7 +73,7 @@ export default function MintStableCoinModal(props: {
           <div className={styles["mint__stable_button_group"]}>
             <button
               className={styles["mint__stable_button"]}
-              onClick={() => {}}
+              onClick={() => props.handleSubmit(props.allBanks[selectedIndex])}
             >
               Mint Coin
             </button>

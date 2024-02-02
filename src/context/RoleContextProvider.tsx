@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { IUserDetails } from "../models/IUserDetails";
 import { firebaseAuth, onAuthStateChanged } from "../helpers/Config";
-import { authController } from "../controllers/auth.controller";
+import { authController } from "../controllers/database/auth.controller";
 
 interface RoleEnum {
   role: "user" | "central_bank" | "bank" | "team" | undefined;

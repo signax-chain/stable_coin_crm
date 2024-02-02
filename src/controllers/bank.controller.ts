@@ -1,22 +1,26 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
-import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
+import { RPC_URL } from "../helpers/Constants";
 import { IBankDetails, ICentralBankDetails } from "../models/IBankDetails";
 import { IUserBankRelation, IWalletData } from "../models/IGeneralFormData";
 import { localStorageController } from "./storage.controller";
 
 class BankController {
-  async getAllBanks(): Promise<IBankDetails[]> {
+  async getAllBanks(
+    contractAddress: string | undefined
+  ): Promise<IBankDetails[]> {
     try {
       const address = localStorageController.getData("wallet");
-      if (!address) {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!address || !contract_address || !contractAddress) {
         return [];
       }
       const allToken: IBankDetails[] = [];
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address ? contract_address : contractAddress!,
         CBDCContract.abi,
         provider
       );
@@ -46,6 +50,11 @@ class BankController {
 
   async createBank(bank: IBankDetails) {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return false;
+      }
       let data = {
         name: bank.bank_name,
         bank_address: bank.bank_address,
@@ -59,7 +68,7 @@ class BankController {
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();
       let contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         signer
       );
@@ -76,6 +85,11 @@ class BankController {
 
   async addUserAddressInfo(user: IUserBankRelation) {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return false;
+      }
       const web3Modal = new Web3Modal({
         cacheProvider: true, // optional
       });
@@ -83,7 +97,7 @@ class BankController {
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();
       let contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         signer
       );
@@ -107,10 +121,15 @@ class BankController {
     bank_address: string
   ): Promise<IUserBankRelation[]> {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return [];
+      }
       const allUsers: IUserBankRelation[] = [];
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         provider
       );
@@ -134,15 +153,20 @@ class BankController {
 
   async getBalanceOf(
     bank_address: string,
-    contract_address: string
+    contractAddress: string | undefined
   ): Promise<number> {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address && contractAddress === undefined) {
+        return 0;
+      }
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();
       let contract = new ethers.Contract(
-        contract_address,
+        contract_address ? contract_address : contractAddress!,
         CBDCContract.abi,
         signer
       );
@@ -153,10 +177,13 @@ class BankController {
     }
   }
 
-  async getAllCentralBankData(
-    contract_address: string
-  ): Promise<ICentralBankDetails[]> {
+  async getAllCentralBankData(): Promise<ICentralBankDetails[]> {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return [];
+      }
       let allCentralBank: ICentralBankDetails[] = [];
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
@@ -184,5 +211,55 @@ class BankController {
       throw error;
     }
   }
+
+  // stable coin
+  async requestToken(address: string, _tokens: number): Promise<boolean> {
+    try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return false;
+      }
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      const contract = new ethers.Contract(
+        contract_address,
+        CBDCContract.abi,
+        provider
+      );
+      const transaction = await contract.requestTokens(address, _tokens);
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async approveRequestToken(address: string): Promise<boolean> {
+    try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return false;
+      }
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      const contract = new ethers.Contract(
+        contract_address,
+        CBDCContract.abi,
+        provider
+      );
+      const transaction = await contract.approveTokens(address);
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 }
 export const bankController = new BankController();

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LineChart } from "@mui/x-charts";
+import { toast } from "react-toastify";
 
 import AccountContextProvider from "../../context/AccountContextProvider";
 import { walletController } from "../../controllers/wallet.controller";
@@ -9,54 +10,53 @@ import {
   IWalletData,
 } from "../../models/IGeneralFormData";
 import { localStorageController } from "../../controllers/storage.controller";
-import ContractContextProvider from "../../context/ContractContextProvider";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 import { tokenController } from "../../controllers/token.controller";
 import { ITokenDetails } from "../../models/ITokenDetail";
 import AddToken from "../Modals/AddToken";
 import GradientInformationCard from "../Cards/GradientCard";
-
-import styles from "../../styles/dashboard.module.css";
 import { useTranslation } from "../../context/TranslatorContextProvider";
-import { CONTRACT_ADDRESS } from "../../helpers/Constants";
 import { IBankDetails } from "../../models/IBankDetails";
 import { bankController } from "../../controllers/bank.controller";
 import TransferToken from "../Modals/TransferToken";
-import { toast } from "react-toastify";
-import { userController } from "../../controllers/user.controller";
+import { userController } from "../../controllers/database/user.controller";
 import { useRoleFinder } from "../../context/RoleContextProvider";
 import StepperComponent from "./StepperComponent";
+import { IContractDatabaseDetails } from "../../models/IContractDetails";
+import { contractController } from "../../controllers/database/contract.controller";
+
+import styles from "../../styles/dashboard.module.css";
 
 export default function DashboardComponent() {
   const [stats, setStats] = useState<IInformationStats[]>([
     {
       title: "Available Tokens",
-      content: "1",
+      content: "0",
       footer: [],
     },
     {
       title: "Total Supply",
-      content: "$15,300",
+      content: "$0",
       footer: [],
     },
     {
       title: "Available Banks",
-      content: "10",
+      content: "0",
       footer: [],
     },
     {
       title: "Total Users",
-      content: "100",
+      content: "0",
       footer: [],
     },
     {
       title: "Transactions per month",
-      content: "1000",
+      content: "0",
       footer: [],
     },
     {
       title: "Available Banks",
-      content: "10",
+      content: "0",
       footer: [],
     },
   ]);
@@ -74,7 +74,7 @@ export default function DashboardComponent() {
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [allBanks, setAllBanks] = useState<IBankDetails[]>([]);
   const [openTransferTokenModal, setOpenTransferTokenModal] = useState(false);
-  const { userInformation, setUserInformation } = useRoleFinder();
+  const { userInformation, role } = useRoleFinder();
   const [currentStep, setCurrentStep] = useState(1);
   const dynamicText = "Central Bank Dashboard";
 
@@ -92,10 +92,19 @@ export default function DashboardComponent() {
 
   useEffect(() => {
     getContractAddress();
+    contractController
+      .getContractByBankId(userInformation?.user_id!)
+      .then((value) => {
+        localStorageController.setData(
+          "contract_address",
+          value.contract_address
+        );
+      });
   }, []);
 
   const getContractAddress = async () => {
     const address = localStorageController.getData("wallet");
+    const contract_address = localStorageController.getData("contract_address");
     if (address) {
       changeLoaderText("Fetching Tokens....");
       changeLoadingStatus(true);
@@ -103,9 +112,9 @@ export default function DashboardComponent() {
       const tokenData = await tokenController.getAllToken(data!.data.address);
       const balance = await bankController.getBalanceOf(
         data!.data.address,
-        CONTRACT_ADDRESS
+        contract_address,
       );
-      const allBanks = await bankController.getAllBanks();
+      const allBanks = await bankController.getAllBanks(contract_address);
       if (tokenData.length) {
         let token: ITokenDetails = {
           token_id: tokenData[0].token_id,
@@ -193,13 +202,16 @@ export default function DashboardComponent() {
     }
   };
 
-  const connectWallet = async () => {
+  const connectWallet = async (i: number) => {
     const res = await walletController.connectWallet();
     if (res.isConnected) {
       let userData = { ...userInformation };
       userData.address = res.address!;
+      userData.created_at = new Date();
+      userData.updated_at = new Date();
       await userController.updateUserDetails(userData.user_id!, userData);
       changeLogInStatus(res.isConnected);
+      setCurrentStep(i);
       let data = {
         address: res.address?.toString()!,
         balance: Number(res.balance),
@@ -215,39 +227,71 @@ export default function DashboardComponent() {
 
   const createToken = async (tokenData: ITokenDetails) => {
     try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        toast("No contract Initialization Found!!", {
+          type: "error",
+        });
+      }
       changeLoaderText("Initializing Token");
       changeLoadingStatus(true);
       const res = await tokenController.createToken(
         tokenData,
-        CONTRACT_ADDRESS,
+        contract_address,
         data.address
       );
       if (res) {
+        const response: IContractDatabaseDetails = {
+          contract_address: contract_address,
+          user_id: userInformation?.user_id!,
+          token_details: tokenData,
+          created_at: new Date(),
+          updated_at: new Date(),
+        };
+        await contractController.createUserContractCollection(response);
         setOpenCreateToken(false);
+        toast("Token created successfully", {
+          type: "success",
+        });
         setTimeout(() => {
           changeLoadingStatus(false);
-          alert("Token Created Successfully");
           window.location.reload();
         }, 3000);
       } else {
+        toast("Token creation failed", {
+          type: "error",
+        });
         setTimeout(() => {
           changeLoadingStatus(false);
-          alert("Token Creation Failed");
         }, 3000);
       }
     } catch (error) {
       changeLoadingStatus(false);
-      alert("Token creation failed " + error);
+      toast("Token creation failed " + error, {
+        type: "error",
+      });
     }
   };
 
   const onTransferToken = async (e: ITransferTokenFormData) => {
     try {
-      changeLoaderText("Transfering Token to " + e.bank_address);
+      changeLoaderText("Transfering Token");
       changeLoadingStatus(true);
       const response = await tokenController.transfer(e);
       if (response) {
-        toast("Token transfered to " + e.bank_address);
+        let selectedData: IContractDatabaseDetails =
+          await contractController.getContractByBankId(userInformation?.user_id!);
+        selectedData.token_details.token_supply -= e.supply_to_be_sent;
+        selectedData.updated_at = new Date();
+        await contractController.updateUserContractCollection(
+          selectedData.user_id,
+          selectedData
+        );
+        toast("Token transfered to " + e.bank_address, {
+          type: "success",
+          theme: "dark",
+        });
         setTimeout(() => {
           changeLoadingStatus(false);
           window.location.reload();
@@ -258,47 +302,56 @@ export default function DashboardComponent() {
     }
   };
 
-  if (!isLoggedIn || tokensAvailable === undefined) {
+  const deployContract = async () => {
+    try {
+      const contract_address = await walletController.deployContract();
+      if (contract_address) {
+        localStorageController.setData("contract_address", contract_address);
+        setCurrentStep(3);
+      }
+    } catch (error) {
+      toast("Error deploying contract " + error, {
+        type: "error",
+      });
+    }
+  };
+
+  if (!isLoggedIn && role.role === "central_bank") {
     return (
       <div className={styles["stepper__compo_main"]}>
-        <StepperComponent currentStep={currentStep} changeStep={() => {}} />
+        <StepperComponent
+          currentStep={currentStep}
+          changeStep={(e: number) => setCurrentStep(e)}
+          connectWallet={(i: number) => connectWallet(i)}
+          tokenCreationModal={() => setOpenCreateToken(true)}
+          deployContract={() => deployContract()}
+          role={role.role}
+        />
+        <AddToken
+          isOpen={openCreateToken}
+          handleClose={() => setOpenCreateToken(false)}
+          handleSubmit={(e: ITokenDetails) => createToken(e)}
+        />
       </div>
     );
   }
 
-  if (!isLoggedIn || tokensAvailable === undefined) {
+  if (!isLoggedIn && role.role === "team") {
     return (
-      <div className="no__data_container">
-        {!isLoggedIn ? (
-          <>
-            <h3>
-              Click on the <strong>connect wallet button</strong> to log in to
-              your wallet
-            </h3>
-            <button onClick={() => connectWallet()}>Connect Wallet</button>
-          </>
-        ) : (
-          <>
-            <h3>
-              Click on the <strong>initialize wallet button</strong> add your
-              token
-            </h3>
-            <button
-              onClick={() => {
-                setOpenCreateToken(true);
-              }}
-            >
-              Initialize Platform
-            </button>
-          </>
-        )}
-        {
-          <AddToken
-            isOpen={openCreateToken}
-            handleClose={() => setOpenCreateToken(false)}
-            handleSubmit={(e: ITokenDetails) => createToken(e)}
-          />
-        }
+      <div className={styles["stepper__compo_main"]}>
+        <StepperComponent
+          currentStep={currentStep}
+          changeStep={(e: number) => setCurrentStep(e)}
+          connectWallet={(i: number) => connectWallet(i)}
+          tokenCreationModal={() => setOpenCreateToken(true)}
+          deployContract={() => deployContract()}
+          role={role.role}
+        />
+        <AddToken
+          isOpen={openCreateToken}
+          handleClose={() => setOpenCreateToken(false)}
+          handleSubmit={(e: ITokenDetails) => createToken(e)}
+        />
       </div>
     );
   }
@@ -307,9 +360,11 @@ export default function DashboardComponent() {
     <div className={styles["dashboard-container"]}>
       <div className={styles["dashboard__heading"]}>
         <h1 className={styles["dashboard-title"]}>{translatedText}</h1>
-        <button onClick={() => setOpenTransferTokenModal(true)}>
-          Transfer Token
-        </button>
+        {role.role === "central_bank" && (
+          <button onClick={() => setOpenTransferTokenModal(true)}>
+            Transfer Token
+          </button>
+        )}
       </div>
       <div className={styles["dashboard__stats"]}>
         <div className={styles["dashboard__basic_stats"]}>

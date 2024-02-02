@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
 import { ITokenDetails } from "../models/ITokenDetail";
-import { CONTRACT_ADDRESS, RPC_URL } from "../helpers/Constants";
+import { RPC_URL } from "../helpers/Constants";
 import { ICentralBankDetails } from "../models/IBankDetails";
 import { localStorageController } from "./storage.controller";
 import { ITransferTokenFormData } from "../models/IGeneralFormData";
@@ -10,10 +10,14 @@ import { ITransferTokenFormData } from "../models/IGeneralFormData";
 class TokenController {
   async getAllToken(address: string) {
     try {
+      const contract_address = localStorageController.getData("contract_address");
+      if(!contract_address){
+        return [];
+      }
       const allToken = [];
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         provider
       );
@@ -81,6 +85,10 @@ class TokenController {
 
   async transfer(token: ITransferTokenFormData) {
     try {
+      const contract_address = localStorageController.getData("contract_address");
+      if(!contract_address){
+        return false;
+      }
       const web3Modal = new Web3Modal({
         cacheProvider: true, // optional
       });
@@ -88,7 +96,7 @@ class TokenController {
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();
       let contract = new ethers.Contract(
-        CONTRACT_ADDRESS,
+        contract_address,
         CBDCContract.abi,
         signer
       );

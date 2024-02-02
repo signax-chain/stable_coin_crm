@@ -1,20 +1,12 @@
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  firebaseAuth,
-  getDoc,
   userRef,
   doc,
-  addDoc,
   setDoc,
-  signOut,
   getDocs,
   where,
   query,
-} from "../helpers/Config";
-import { IWalletData } from "../models/IGeneralFormData";
-import { IUserDetails } from "../models/IUserDetails";
-import { localStorageController } from "./storage.controller";
+} from "../../helpers/Config";
+import { IUserDetails } from "../../models/IUserDetails";
 
 class UserController {
   async getAllUsers(uid: string): Promise<IUserDetails[]> {

@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import SidebarComponent from "../components/Sidebar";
@@ -18,11 +18,18 @@ import { useRoleFinder } from "../context/RoleContextProvider";
 import styles from "../styles/home.module.css";
 import LogoutComponent from "../components/Logout";
 import PlatformUsers from "../components/Users/PlatformUsers";
+import { INotificationUserDetails } from "../models/INotifications";
+import { notificationController } from "../controllers/database/notification.controller";
+import NotificationComponent from "../components/Notification/NotificationComponent";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(false);
   const [loggedInData, setLoggedInData] = useState({ address: "", balance: 0 });
+  const [allNotifications, setAllNotifications] = useState<
+    INotificationUserDetails[]
+  >([]);
+  const { userInformation } = useRoleFinder();
   const onSidebarChange = (index: number) => {
     setSelectedSidebarIndex(index);
   };
@@ -30,6 +37,11 @@ export default function HomeLayout() {
   useEffect(() => {
     getDataFromLocalStorage();
     window.addEventListener("wallet", () => getDataFromLocalStorage);
+    notificationController
+      .getAllNotifications(userInformation?.user_id!)
+      .then((value) => {
+        setAllNotifications(value);
+      });
   }, []);
 
   const getDataFromLocalStorage = () => {
@@ -79,7 +91,10 @@ export default function HomeLayout() {
           </div>
           <div className={styles["main-content"]}>
             {/* Navbar content */}
-            <NavbarComponent onConnect={() => connectWallet()} />
+            <NavbarComponent
+              onConnect={() => connectWallet()}
+              notificationLength={allNotifications.length}
+            />
             <div className={styles["module-content"]}>
               {/* Main module content */}
               <Routes>
@@ -89,6 +104,12 @@ export default function HomeLayout() {
                 <Route path="banks" element={<ViewAllBankComponents />} />
                 <Route path="logout" element={<LogoutComponent />} />
                 <Route path="users" element={<PlatformUsers />} />
+                <Route
+                  path="notifications"
+                  element={
+                    <NotificationComponent notifications={allNotifications} />
+                  }
+                />
                 <Route path="banks/:id" element={<ViewBankComponent />} />
                 <Route
                   path="view"
