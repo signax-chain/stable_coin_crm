@@ -1,72 +1,64 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { bankController } from "../../controllers/bank.controller";
-import { IBankDetails, ICentralBankDetails } from "../../models/IBankDetails";
 import MintStableCoinModal from "../Modals/MintStableCoins";
 import GradientInformationCard from "../Cards/GradientCard";
-import { IInformationStats } from "../../models/IGeneralFormData";
+import {
+  IContractDatabaseFormDetails,
+  IInformationStats,
+} from "../../models/IGeneralFormData";
 
 import styles from "../../styles/coin_index.module.css";
-import { CONTRACT_ADDRESS } from "../../helpers/Constants";
+import { STABLE_COIN_CONTRACT_ADDRESS } from "../../helpers/Constants";
 import { contractController } from "../../controllers/database/contract.controller";
 import { IContractDatabaseDetails } from "../../models/IContractDetails";
 import { INotificationDetails } from "../../models/INotifications";
-import AccountContextProvider from "../../context/AccountContextProvider";
 import { useRoleFinder } from "../../context/RoleContextProvider";
 import LoaderContextProvider from "../../context/LoaderContextProvider";
 import { notificationController } from "../../controllers/database/notification.controller";
 import { toast } from "react-toastify";
+import { userController } from "../../controllers/database/user.controller";
+import { tokenController } from "../../controllers/token.controller";
+import { IStableCoins } from "../../models/IStableCoins";
+import { Timestamp } from "firebase/firestore";
+import { bankDatabaseController } from "../../controllers/database/bank.controller";
+import AccountContextProvider from "../../context/AccountContextProvider";
 
 export default function CoinIndex() {
   const [openMintModal, setOpenMintModal] = useState(false);
   const [allBanks, setAllBanks] = useState<IContractDatabaseDetails[]>([]);
   const { userInformation } = useRoleFinder();
+  const { data } = useContext(AccountContextProvider);
   const { changeLoaderText, changeLoadingStatus } = useContext(
     LoaderContextProvider
   );
-  const [data, setData] = useState<IInformationStats[]>([
-    {
-      title: "Stable Coins Minted",
-      content: "0",
-      footer: [
-        {
-          title: "Total Countries",
-          content: "0",
-          footer: [],
-        },
-        {
-          title: "Generated Value",
-          content: "0",
-          footer: [],
-        },
-      ],
-    },
-  ]);
+  const [_, setData] = useState<IInformationStats[]>([]);
+  const [allStableCoins, setAllStableCoins] = useState<IStableCoins[]>([]);
 
   useEffect(() => {
     async function getAllAvailableBanks() {
-      contractController.getAllContractAddresses().then((value) => {
-        let data: IContractDatabaseDetails[] = value;
+      await getAllStableCoin();
+      contractController.getAllContractAddresses().then(async (value) => {
+        let data: IContractDatabaseDetails[] = [];
         let info: IInformationStats[] = [];
         for (let index = 0; index < value.length; index++) {
           const element = value[index];
-          const data = {
-            title: `${element.token_details.token_name}`,
-            content: `${element.token_details.token_supply}`,
-            footer: [
-              {
-                title: "Total Countries",
-                content: "0",
-                footer: [],
+          const res = await userController.getUserById(element.user_id);
+          if (res.length > 0) {
+            let contractData: IContractDatabaseDetails = {
+              contract_address: element.contract_address,
+              user_id: element.user_id,
+              token_details: {
+                token_id: 0,
+                token_name: res[0].name,
+                token_description: "",
+                token_supply: 0,
               },
-              {
-                title: "Generated Value",
-                content: "0",
-                footer: [],
-              },
-            ],
-          };
-          info.push(data);
+              created_at: element.created_at,
+              updated_at: element.updated_at,
+              country: res[0].country,
+            };
+            data.push(contractData);
+          }
         }
         let mergeData = [...info];
         setData(mergeData);
@@ -76,29 +68,82 @@ export default function CoinIndex() {
     getAllAvailableBanks();
   }, []);
 
-  const mintCoinAddress = async (contractData: IContractDatabaseDetails) => {
+  const getAllStableCoin = async () => {
+    try {
+      changeLoaderText("Fetching all coins...");
+      changeLoadingStatus(false);
+      const response = await bankDatabaseController.getAllStableCoins();
+      setAllStableCoins(response);
+      setTimeout(() => {
+        changeLoadingStatus(false);
+      }, 3000);
+    } catch (error) {
+      toast("Error fetching all stable coins " + error, {
+        type: "error",
+        theme: "dark",
+      });
+    }
+  };
+
+  const mintCoinAddress = async (
+    contractData: IContractDatabaseDetails,
+    formData: IContractDatabaseFormDetails
+  ) => {
     try {
       changeLoaderText("Minting Coin....");
       changeLoadingStatus(true);
-      let data: INotificationDetails = {
+      let notificationData: INotificationDetails = {
         creator_id: userInformation?.user_id!,
         notification_type: "request_token",
         is_resolved: false,
         created_at: new Date(),
         updated_at: new Date(),
       };
-      let res = await notificationController.createNotification(
-        data,
-        userInformation?.user_id!,
-        contractData
+      let response = await tokenController.mintToken(
+        formData.supply,
+        contractData.country!
       );
-      if (res) {
-        toast("Minted Successfully. Notification triggered to the bank", {
-          type: "success",
-        });
-        setTimeout(() => {
-          changeLoadingStatus(false);
-        }, 3000);
+      if (response) {
+        const userDetails = await userController.getUserById(
+          contractData.user_id
+        );
+        let coinDetails: IStableCoins = {
+          country: formData.country,
+          supply_minted: formData.supply,
+          creator_smart_contract_address: STABLE_COIN_CONTRACT_ADDRESS,
+          receiver_smart_contract_address: contractData.contract_address,
+          creator_wallet_address: data.address,
+          creator_id: userInformation?.user_id!,
+          bank_id: contractData.user_id,
+          bank_details: {
+            token_id: 0,
+            bank_name: userDetails[0].name,
+            bank_address: contractData.user_id,
+            bank_user_extension: "",
+            daily_max_transaction_amount: 0,
+            daily_max_number_transaction: 0,
+            supply: 0,
+          },
+          created_at: Timestamp.now(),
+          updated_at: Timestamp.now(),
+        };
+        contractData.token_details.token_supply = coinDetails.supply_minted;
+        await bankDatabaseController.createStableCoin(coinDetails);
+        let res = await notificationController.createNotification(
+          notificationData,
+          userInformation?.user_id!,
+          contractData,
+          coinDetails
+        );
+        if (res) {
+          setOpenMintModal(false);
+          toast("Minted Successfully. Notification triggered to the bank", {
+            type: "success",
+          });
+          setTimeout(() => {
+            changeLoadingStatus(false);
+          }, 3000);
+        }
       }
     } catch (error) {
       toast("Minting Failed. Please try again ...." + error, {
@@ -122,7 +167,7 @@ export default function CoinIndex() {
         </button>
       </div>
       <div className={styles["coin__index_content"]}>
-        {data.length === 0 ? (
+        {allStableCoins.length === 0 ? (
           <div className="no__data_container" style={{ marginTop: "10%" }}>
             <h3>
               No Stable Coins Minted. <br />
@@ -135,10 +180,21 @@ export default function CoinIndex() {
           </div>
         ) : (
           <div className={styles["coin__stats"]}>
-            {data.map((info, index) => {
+            {allStableCoins.map((info, index) => {
+              let value: IInformationStats = {
+                title: info.bank_details.bank_name,
+                content: info.supply_minted.toString(),
+                footer: [
+                  {
+                    title: "Country",
+                    content: info.country,
+                    footer: [],
+                  },
+                ],
+              };
               return (
                 <div key={index} className={styles["coin__card"]}>
-                  <GradientInformationCard data={info} />
+                  <GradientInformationCard data={value} />
                 </div>
               );
             })}
@@ -148,7 +204,10 @@ export default function CoinIndex() {
       <MintStableCoinModal
         isOpen={openMintModal}
         handleClose={() => setOpenMintModal(false)}
-        handleSubmit={(e:IContractDatabaseDetails) => mintCoinAddress(e)}
+        handleSubmit={(
+          e: IContractDatabaseDetails,
+          d: IContractDatabaseFormDetails
+        ) => mintCoinAddress(e, d)}
         allBanks={allBanks}
       />
     </div>

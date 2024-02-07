@@ -414,7 +414,7 @@ contract CBDCCoin {
         string memory _symbol,
         uint256 _initialSupply,
         CentralBankDetails memory bankDetails
-    ) public onlyCreator returns (bool success) {
+    ) public returns (bool success) {
         totalSupply += _initialSupply; //INCASE WE WANT TO ISSUE MORE TOKEN LATER
         balanceOf[msg.sender] = totalSupply; //initialize totalSupply to the address creator
         addressTokens[msg.sender] = Tokens(
@@ -473,7 +473,7 @@ contract CBDCCoin {
 
     function approveTokens(
         address _requester
-    ) public onlyCreator returns (bool success) {
+    ) public returns (bool success) {
         uint256 requestedAmount = requestedTokens[_requester];
         require(requestedAmount > 0, "No tokens requested by the address");
 

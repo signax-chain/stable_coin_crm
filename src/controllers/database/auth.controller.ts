@@ -1,3 +1,4 @@
+import { UserCredential } from "firebase/auth";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -65,7 +66,7 @@ class AuthController {
     }
   }
 
-  async registerUser(data: IUserDetails): Promise<boolean> {
+  async registerUser(data: IUserDetails): Promise<UserCredential | undefined> {
     try {
       const response = await createUserWithEmailAndPassword(
         firebaseAuth,
@@ -77,9 +78,9 @@ class AuthController {
         data.user_id = user_id;
         const documentReference = doc(userRef, user_id);
         await setDoc(documentReference, data, { merge: true });
-        return true;
+        return response;
       }
-      return false;
+      return undefined;
     } catch (error) {
       throw error;
     }

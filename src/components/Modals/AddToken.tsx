@@ -4,11 +4,13 @@ import React, { ChangeEvent, useState } from "react";
 import styles from "../../styles/modals/add_token.module.css";
 import { XCircle } from "lucide-react";
 import { ITokenDetails } from "../../models/ITokenDetail";
+import { IStableCoins } from "../../models/IStableCoins";
 
 export default function AddToken(props: {
   isOpen: boolean;
   handleClose: () => void;
   handleSubmit: (e:ITokenDetails) => void;
+  mintedCoin: IStableCoins | undefined;
 }) {
   const [createToken, setCreateToken] = useState<ITokenDetails>({
     token_id: +Date.now(),
@@ -67,8 +69,9 @@ export default function AddToken(props: {
                   <input
                     type="number"
                     name="token_supply"
-                    value={createToken.token_supply}
+                    value={props.mintedCoin !== undefined ? props.mintedCoin.supply_minted :createToken.token_supply}
                     onChange={inputChange}
+                    readOnly={props.mintedCoin !== undefined}
                   />
                 </div>
                 <div className={styles["add__token_group"]}>

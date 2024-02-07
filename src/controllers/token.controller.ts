@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
+import StableContract from "../artifacts/contracts/stablecoin.sol/StableCoin.json";
 import { ITokenDetails } from "../models/ITokenDetail";
-import { RPC_URL } from "../helpers/Constants";
+import { RPC_URL, STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
 import { ICentralBankDetails } from "../models/IBankDetails";
 import { localStorageController } from "./storage.controller";
 import { ITransferTokenFormData } from "../models/IGeneralFormData";
@@ -10,8 +11,9 @@ import { ITransferTokenFormData } from "../models/IGeneralFormData";
 class TokenController {
   async getAllToken(address: string) {
     try {
-      const contract_address = localStorageController.getData("contract_address");
-      if(!contract_address){
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
         return [];
       }
       const allToken = [];
@@ -85,8 +87,9 @@ class TokenController {
 
   async transfer(token: ITransferTokenFormData) {
     try {
-      const contract_address = localStorageController.getData("contract_address");
-      if(!contract_address){
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
         return false;
       }
       const web3Modal = new Web3Modal({
@@ -114,5 +117,94 @@ class TokenController {
     }
   }
 
+  async requestTokenTransfer({
+    requesterAddress,
+    tokens,
+  }: {
+    requesterAddress: string;
+    tokens: number;
+  }) {
+    try {
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (!contract_address) {
+        return false;
+      }
+      const web3Modal = new Web3Modal({
+        cacheProvider: true, // optional
+      });
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      let contract = new ethers.Contract(
+        contract_address,
+        CBDCContract.abi,
+        signer
+      );
+      let transaction = await contract.requestTokens(requesterAddress, tokens);
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async approveTokenRequest({
+    requesterAddress,
+    contractAddress,
+  }: {
+    requesterAddress: string;
+    contractAddress: string;
+  }) {
+    try {
+      const web3Modal = new Web3Modal({
+        cacheProvider: true, // optional
+      });
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      let contract = new ethers.Contract(
+        contractAddress,
+        CBDCContract.abi,
+        signer
+      );
+      let transaction = await contract.approveTokens(requesterAddress);
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async mintToken(value: number, country: string) {
+    try {
+      const web3Modal = new Web3Modal({
+        cacheProvider: true, // optional
+      });
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      let contract = new ethers.Contract(
+        STABLE_COIN_CONTRACT_ADDRESS,
+        StableContract.abi,
+        signer
+      );
+      let transaction = await contract.mint(value, country);
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }
 export const tokenController = new TokenController();

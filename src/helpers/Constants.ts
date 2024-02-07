@@ -1,5 +1,8 @@
-export const CONTRACT_ADDRESS = "0x7B827DF7B13456914C6cC054bf61AB00f647a159";
-export const RPC_URL = "https://eth-goerli.g.alchemy.com/v2/AIB9PePeQo8z07x0qtINpDSZUZuFJbKp";
+export const CONTRACT_ADDRESS = "0x2726eEcbA4004287Ee89b4789BA0F6e02dFC0d59";
+export const STABLE_COIN_CONTRACT_ADDRESS = "0x910d57e99241FE27cDf42659238139460f9D6978";
+
+export const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/QZN0dSFmJQ6xAM7yzbzpA76C2CbZFyQF";
+
 export const allBanks = [
   "ICICI Bank Ltd",
   "Bank of Baroda",

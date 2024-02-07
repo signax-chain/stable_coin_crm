@@ -56,6 +56,7 @@ const contractRef: CollectionReference = collection(firebaseDB, "contract_user_c
 const bankRef: CollectionReference = collection(firebaseDB, "contract_bank_collections");
 const notificationRef: CollectionReference = collection(firebaseDB, "notifications");
 const notificationUserRef: CollectionReference = collection(firebaseDB, "notification_user_collections");
+const stableCoinRef: CollectionReference = collection(firebaseDB, "stable_coin_collections");
 
 export {
   firebaseAuth,
@@ -89,4 +90,5 @@ export {
   bankRef,
   notificationRef,
   notificationUserRef,
+  stableCoinRef,
 };

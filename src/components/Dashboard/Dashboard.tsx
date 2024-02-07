@@ -92,14 +92,16 @@ export default function DashboardComponent() {
 
   useEffect(() => {
     getContractAddress();
-    contractController
+    if(role.role !== "team"){
+      contractController
       .getContractByBankId(userInformation?.user_id!)
       .then((value) => {
         localStorageController.setData(
           "contract_address",
-          value.contract_address
+          value!.contract_address
         );
       });
+    }
   }, []);
 
   const getContractAddress = async () => {
@@ -248,6 +250,7 @@ export default function DashboardComponent() {
           token_details: tokenData,
           created_at: new Date(),
           updated_at: new Date(),
+          country: "",
         };
         await contractController.createUserContractCollection(response);
         setOpenCreateToken(false);
@@ -280,13 +283,13 @@ export default function DashboardComponent() {
       changeLoadingStatus(true);
       const response = await tokenController.transfer(e);
       if (response) {
-        let selectedData: IContractDatabaseDetails =
+        let selectedData: IContractDatabaseDetails | undefined =
           await contractController.getContractByBankId(userInformation?.user_id!);
-        selectedData.token_details.token_supply -= e.supply_to_be_sent;
-        selectedData.updated_at = new Date();
+        selectedData!.token_details.token_supply -= e.supply_to_be_sent;
+        selectedData!.updated_at = new Date();
         await contractController.updateUserContractCollection(
-          selectedData.user_id,
-          selectedData
+          selectedData!.user_id,
+          selectedData!
         );
         toast("Token transfered to " + e.bank_address, {
           type: "success",
@@ -316,7 +319,7 @@ export default function DashboardComponent() {
     }
   };
 
-  if (!isLoggedIn && role.role === "central_bank") {
+  if ((!isLoggedIn) && role.role === "central_bank") {
     return (
       <div className={styles["stepper__compo_main"]}>
         <StepperComponent
@@ -326,11 +329,6 @@ export default function DashboardComponent() {
           tokenCreationModal={() => setOpenCreateToken(true)}
           deployContract={() => deployContract()}
           role={role.role}
-        />
-        <AddToken
-          isOpen={openCreateToken}
-          handleClose={() => setOpenCreateToken(false)}
-          handleSubmit={(e: ITokenDetails) => createToken(e)}
         />
       </div>
     );
@@ -351,6 +349,7 @@ export default function DashboardComponent() {
           isOpen={openCreateToken}
           handleClose={() => setOpenCreateToken(false)}
           handleSubmit={(e: ITokenDetails) => createToken(e)}
+          mintedCoin={undefined}
         />
       </div>
     );

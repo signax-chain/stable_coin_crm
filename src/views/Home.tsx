@@ -21,6 +21,7 @@ import PlatformUsers from "../components/Users/PlatformUsers";
 import { INotificationUserDetails } from "../models/INotifications";
 import { notificationController } from "../controllers/database/notification.controller";
 import NotificationComponent from "../components/Notification/NotificationComponent";
+import { STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);
@@ -29,16 +30,22 @@ export default function HomeLayout() {
   const [allNotifications, setAllNotifications] = useState<
     INotificationUserDetails[]
   >([]);
-  const { userInformation } = useRoleFinder();
+  const { userInformation, role } = useRoleFinder();
   const onSidebarChange = (index: number) => {
     setSelectedSidebarIndex(index);
   };
 
   useEffect(() => {
+    if (role.role === "team") {
+      localStorageController.setData(
+        "contract_address",
+        STABLE_COIN_CONTRACT_ADDRESS
+      );
+    }
     getDataFromLocalStorage();
     window.addEventListener("wallet", () => getDataFromLocalStorage);
     notificationController
-      .getAllNotifications(userInformation?.user_id!)
+      .getAllNotifications(userInformation?.user_id!, role.role!)
       .then((value) => {
         setAllNotifications(value);
       });

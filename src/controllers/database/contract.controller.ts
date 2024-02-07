@@ -6,6 +6,7 @@ import {
   contractRef,
 } from "../../helpers/Config";
 import { IContractDatabaseDetails } from "../../models/IContractDetails";
+import { userController } from "./user.controller";
 
 class ContractController {
   async getAllContractAddresses(): Promise<IContractDatabaseDetails[]> {
@@ -26,6 +27,7 @@ class ContractController {
           },
           created_at: new Date(),
           updated_at: new Date(),
+          country: "",
         };
         allUserContractRelations.push(data);
       }
@@ -35,7 +37,7 @@ class ContractController {
     }
   }
 
-  async getContractByBankId(uid: string): Promise<IContractDatabaseDetails> {
+  async getContractByBankId(uid: string): Promise<IContractDatabaseDetails | undefined> {
     try {
       let contractDatabaseDetails: IContractDatabaseDetails | undefined =
         undefined;
@@ -54,11 +56,12 @@ class ContractController {
           },
           created_at: new Date(),
           updated_at: new Date(),
+          country: "",
         };
         contractDatabaseDetails = data;
         return contractDatabaseDetails!;
       }
-      throw "Following user do not have any tokens";
+      return undefined;
     } catch (error) {
       throw error;
     }

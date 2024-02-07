@@ -31,3 +31,13 @@
   th, td {
     padding: 10px;
   }
+  .platform__user_add_button{
+    border: none;
+    outline: none;
+    height: 40px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+  }

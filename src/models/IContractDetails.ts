@@ -6,4 +6,5 @@ export interface IContractDatabaseDetails{
     token_details: ITokenDetails,
     created_at: Date,
     updated_at: Date,
+    country: string | undefined;
 }

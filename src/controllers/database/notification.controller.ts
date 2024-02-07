@@ -1,7 +1,5 @@
+import { Timestamp } from "firebase/firestore";
 import {
-  getDoc,
-  doc,
-  setDoc,
   getDocs,
   notificationRef,
   addDoc,
@@ -15,14 +13,16 @@ import {
   INotificationUserDetails,
 } from "../../models/INotifications";
 import { userController } from "./user.controller";
+import { IStableCoins } from "../../models/IStableCoins";
+import { IBankDetails } from "../../models/IBankDetails";
+import { IUserDetails } from "../../models/IUserDetails";
 class NotificationController {
-  async getAllNotifications(uid: string): Promise<INotificationUserDetails[]> {
+  async getAllNotifications(uid: string, role: string): Promise<INotificationUserDetails[]> {
     try {
       let data: INotificationUserDetails[] = [];
       const documentRequest = query(
         notificationUserRef,
-        where("receiver_id", "==", uid),
-        where("is_read", "==", false)
+        where("receiver_id", "==", role==="team" ? "team" : uid)
       );
       const documentResponse = await getDocs(documentRequest);
       for (let index = 0; index < documentResponse.docs.length; index++) {
@@ -38,6 +38,7 @@ class NotificationController {
           created_at: elementData.created_at,
           updated_at: elementData.updated_at,
           notification_type: elementData.notification_type,
+          data: elementData.data,
         };
         data.push(elementContent);
       }
@@ -50,7 +51,8 @@ class NotificationController {
   async createNotification(
     notification: INotificationDetails,
     uid: string,
-    contractData: IContractDatabaseDetails
+    contractData: IContractDatabaseDetails,
+    data: IStableCoins | IBankDetails | IUserDetails
   ): Promise<boolean> {
     try {
       const documentResponse = await addDoc(notificationRef, notification);
@@ -67,9 +69,10 @@ class NotificationController {
               title: "You have a unread notification",
               message: "",
               is_read: false,
-              created_at: new Date(),
-              updated_at: new Date(),
+              created_at: Timestamp.now(),
+              updated_at: Timestamp.now(),
               notification_type: notification.notification_type,
+              data: data,
             };
             await addDoc(notificationRef, notificationData);
           }
@@ -79,16 +82,29 @@ class NotificationController {
             creator_id: notification.creator_id,
             receiver_id: contractData.user_id,
             notification_doc_id: doc_id,
-            title: `We have a new Mint of Coins`,
-            message: `We have minted ${contractData.token_details.token_supply} tokens. Send the request to CCX team to request for Stable Coins`,
+            title: `We have a new Mint of Stable Coins`,
+            message: `We have minted ${contractData.token_details.token_supply} stable coins. Click on send button to send ${contractData.token_details.token_supply} CBDC's to CCX Team`,
             is_read: false,
-            created_at: new Date(),
-            updated_at: new Date(),
-            notification_type: notification.notification_type
+            created_at: Timestamp.now(),
+            updated_at:  Timestamp.now(),
+            notification_type: notification.notification_type,
+            data: data,
           };
           await addDoc(notificationUserRef, notificationData);
           return true;
         }
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createNotificationWithUserData(notificationData: INotificationUserDetails){
+    try {
+      const res = await addDoc(notificationUserRef, notificationData);
+      if(res){
+        return true;
       }
       return false;
     } catch (error) {

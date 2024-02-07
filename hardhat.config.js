@@ -13,7 +13,7 @@ module.exports = {
   },
   networks: {
     ethereum: {
-      url: "https://eth-goerli.g.alchemy.com/v2/AIB9PePeQo8z07x0qtINpDSZUZuFJbKp",
+      url: "https://eth-sepolia.g.alchemy.com/v2/QZN0dSFmJQ6xAM7yzbzpA76C2CbZFyQF",
       accounts: ["0x386af4b4c8d5e747f56eb4c6a3ccc095316d260dfaa2f9206bf2f5be235effea"],
     },
   },

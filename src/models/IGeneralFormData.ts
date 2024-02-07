@@ -1,3 +1,5 @@
+import { IBankDatabaseDetails, IBankDetails } from "./IBankDetails";
+
 export interface ITransferTokenFormData {
   token_name: string;
   total_supply: number;
@@ -22,5 +24,11 @@ export interface IWalletData {
 export interface IInformationStats {
   title: string;
   content: string;
-  footer: IInformationStats[],
+  footer: IInformationStats[];
+}
+
+export interface IContractDatabaseFormDetails {
+  country: string;
+  supply: number;
+  bank_details: IBankDetails;
 }

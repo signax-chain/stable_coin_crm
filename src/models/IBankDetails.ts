@@ -33,3 +33,11 @@ export interface IBankDatabaseDetails {
   created_at: Date,
   updated_at: Date,
 }
+export interface ICentralBankFormDetails {
+  name: string;
+  symbol: string;
+  country: string;
+  contract_address: string;
+  email_address: string;
+  password: string;
+}

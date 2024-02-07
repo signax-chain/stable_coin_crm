@@ -1,8 +1,13 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
-import { RPC_URL } from "../helpers/Constants";
-import { IBankDetails, ICentralBankDetails } from "../models/IBankDetails";
+import StableContract from "../artifacts/contracts/stablecoin.sol/StableCoin.json";
+import { RPC_URL, STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
+import {
+  IBankDetails,
+  ICentralBankDetails,
+  ICentralBankFormDetails,
+} from "../models/IBankDetails";
 import { IUserBankRelation, IWalletData } from "../models/IGeneralFormData";
 import { localStorageController } from "./storage.controller";
 
@@ -260,6 +265,34 @@ class BankController {
       throw error;
     }
   }
-  
+
+  async createACentralBank(bank: ICentralBankFormDetails): Promise<boolean> {
+    try {
+      const web3Modal = new Web3Modal({
+        cacheProvider: true, // optional
+      });
+      const connection = await web3Modal.connect();
+      const provider = new ethers.BrowserProvider(connection);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(
+        STABLE_COIN_CONTRACT_ADDRESS,
+        StableContract.abi,
+        signer
+      );
+      const transaction = await contract.addCentralBank(
+        bank.name,
+        bank.symbol,
+        bank.country,
+        bank.contract_address
+      );
+      const transactionData = await transaction.wait();
+      if (transactionData) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 export const bankController = new BankController();

@@ -143,6 +143,7 @@ export default function ViewAllTokens() {
           isOpen={openCreateToken}
           handleClose={() => setOpenCreateToken(false)}
           handleSubmit={(e: ITokenDetails) => createToken(e)}
+          mintedCoin={undefined}
         />
       )}
     </div>

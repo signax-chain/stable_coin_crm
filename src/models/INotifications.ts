@@ -1,3 +1,8 @@
+import { Timestamp } from "firebase/firestore";
+import { IStableCoins } from "./IStableCoins";
+import { IBankDetails } from "./IBankDetails";
+import { IUserDetails } from "./IUserDetails";
+
 export interface INotificationDetails {
   creator_id: string;
   notification_type:
@@ -22,6 +27,11 @@ export interface INotificationUserDetails {
   | "response_request_token"
   | "general"
   | undefined;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+  data: IStableCoins | IBankDetails | IUserDetails | undefined;
+}
+
+export interface INotificationData {
+  data: IStableCoins | IBankDetails | IUserDetails
 }
