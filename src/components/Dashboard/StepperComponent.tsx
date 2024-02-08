@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { Check, Coins, ReceiptText, Wallet } from "lucide-react";
 import { StepIconProps } from "@mui/material";
@@ -9,7 +8,6 @@ import styled from "@emotion/styled";
 
 import styles from "../../styles/stepper_component.module.css";
 import AccountContextProvider from "../../context/AccountContextProvider";
-import { localStorageController } from "../../controllers/storage.controller";
 
 export default function StepperComponent(props: {
   currentStep: number;

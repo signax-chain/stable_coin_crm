@@ -28,12 +28,13 @@
 }
 .index__background{
     width: 100%;
-    height: calc(100vh - 26vh);
+    max-height: calc(100vh - 30vh);
     background-color: var(--explorer-color);
     flex-direction: column;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 30px;
 }
 .flex__start{
     width: 50%;
@@ -90,7 +91,7 @@ input:focus{
 }
 .transaction__details{
     width: 90%;
-    height: calc(100vh - 30vh);
+    max-height: calc(100vh - 35vh);
     background-color: var(--explorer-color);
     border-radius: 10px;
     border: 1px solid var(--explorer-border-color);
@@ -180,8 +181,8 @@ input:focus{
     align-items: center;
 }
 .a{
-    color: white;
-    font-size: 12px;
+    color: #0A84C3;
+    font-size: 14px;
     text-decoration: none;
 }
 .hash__data{

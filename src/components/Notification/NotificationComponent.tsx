@@ -36,6 +36,7 @@ export default function NotificationComponent(props: {
   const [stableCoin, setStableCoin] = useState<IStableCoins | undefined>(
     undefined
   );
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     async function getAllNotifications() {
@@ -92,6 +93,7 @@ export default function NotificationComponent(props: {
           created_at: Timestamp.now(),
           updated_at: Timestamp.now(),
           data: undefined,
+          doc_id: undefined,
         };
         const response =
           await notificationController.createNotificationWithUserData(
@@ -175,15 +177,6 @@ export default function NotificationComponent(props: {
         data.address
       );
       if (res) {
-        // const response: IContractDatabaseDetails = {
-        //   contract_address: contract_address,
-        //   user_id: userInformation?.user_id!,
-        //   token_details: tokenData,
-        //   created_at: new Date(),
-        //   updated_at: new Date(),
-        //   country: "",
-        // };
-        // await contractController.createUserContractCollection(response);
         const response: IContractDatabaseDetails | undefined =
           await contractController.getContractByBankId(stableCoin?.bank_id!);
         await acceptRequestToken(response!.contract_address);
@@ -193,7 +186,6 @@ export default function NotificationComponent(props: {
         });
         setTimeout(() => {
           changeLoadingStatus(false);
-          window.location.reload();
         }, 3000);
       } else {
         toast("Token creation failed", {
@@ -242,6 +234,9 @@ export default function NotificationComponent(props: {
                     <button
                       onClick={() => {
                         setOpenCreateToken(true);
+                        setSelectedIndex(index);
+                        notification.is_read = true;
+                        notificationController.updateNotification(notification);
                         if ("supply_minted" in notification.data!) {
                           setStableCoin(notification.data);
                         }

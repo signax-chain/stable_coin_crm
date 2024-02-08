@@ -7,6 +7,9 @@ import { RPC_URL, STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
 import { ICentralBankDetails } from "../models/IBankDetails";
 import { localStorageController } from "./storage.controller";
 import { ITransferTokenFormData } from "../models/IGeneralFormData";
+import { iTransaction, iTransactionDetails } from "../models/ITransaction";
+import { Timestamp } from "firebase/firestore";
+import { transactionController } from "./database/transaction.controller";
 
 class TokenController {
   async getAllToken(address: string) {
@@ -77,8 +80,55 @@ class TokenController {
       );
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "create_token",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "create_token",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -109,8 +159,55 @@ class TokenController {
       );
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: token.bank_address,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: token.bank_address,
+          transaction_tokens: [],
+          transaction_action: "transfer_token",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: token.bank_address,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: token.bank_address,
+        transaction_tokens: [],
+        transaction_action: "transfer_token",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -144,8 +241,55 @@ class TokenController {
       let transaction = await contract.requestTokens(requesterAddress, tokens);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "request_token_transfer",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "request_token_transfer",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -174,8 +318,55 @@ class TokenController {
       let transaction = await contract.approveTokens(requesterAddress);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "approve_token_transfer",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "approve_token_transfer",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -198,8 +389,55 @@ class TokenController {
       let transaction = await contract.mint(value, country);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [value.toString()],
+          transaction_action: "mint_token",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: value,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [value.toString()],
+        transaction_action: "mint_token",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: value,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       console.log(error);

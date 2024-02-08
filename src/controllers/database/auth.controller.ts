@@ -68,6 +68,7 @@ class AuthController {
 
   async registerUser(data: IUserDetails): Promise<UserCredential | undefined> {
     try {
+      const currentUser = firebaseAuth.currentUser;
       const response = await createUserWithEmailAndPassword(
         firebaseAuth,
         data.email,
@@ -78,6 +79,14 @@ class AuthController {
         data.user_id = user_id;
         const documentReference = doc(userRef, user_id);
         await setDoc(documentReference, data, { merge: true });
+        if(currentUser){
+          let currentUserDataDoc = doc(userRef, currentUser.uid);
+          let currentUserData = await getDoc(currentUserDataDoc);
+          if(currentUserData.exists()){
+            let {email, password} = currentUserData.data();
+            await signInWithEmailAndPassword(firebaseAuth, email!, password);
+          }
+        }
         return response;
       }
       return undefined;

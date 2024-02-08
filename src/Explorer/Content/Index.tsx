@@ -11,13 +11,18 @@ import {
 } from "lucide-react";
 
 import GeneralCard from "../../components/Cards/GeneralCard";
-import { transactionController } from "../Controller/transaction.controller";
 import { ITransaction } from "../Models/ITransaction";
 
 import styles from "../styles/index.module.css";
+import { transactionController } from "../../controllers/database/transaction.controller";
+import { iTransactionDetails } from "../../models/ITransaction";
+import { ethers } from "ethers";
+import moment from "moment";
 
 export default function IndexLayout() {
-  const [transactionData, setTransactionData] = useState<ITransaction[]>([]);
+  const [transactionData, setTransactionData] = useState<iTransactionDetails[]>(
+    []
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,8 +73,8 @@ export default function IndexLayout() {
             </div>
             <div className={styles["transaction__body"]}>
               {transactionData.slice(0, 7).map((transaction, index) => {
-                let date = new Date(transaction.time_stamp);
-                let localDate = date.getHours();
+                let date = new Date(transaction.created_at.toDate());
+                let localDate = moment(date).fromNow();
                 return (
                   <div
                     className={styles["transaction__box"]}
@@ -88,32 +93,42 @@ export default function IndexLayout() {
                       <div className={styles["hash__data"]}>
                         <Link
                           className={styles["a"]}
-                          to={"/address/" + transaction.txn_hash}
+                          to={"txn/" + transaction.transaction_hash}
                         >
-                          {transaction.txn_hash.substring(
+                          {transaction.transaction_hash.substring(
                             0,
-                            transaction.txn_hash.length - 30
+                            transaction.transaction_hash.length - 40
                           )}
                           ...
                         </Link>
-                        <p>{localDate} secs</p>
+                        <p>{localDate}</p>
                       </div>
                     </div>
                     <div className={styles["table__content_v1"]}>
-                      <p>
-                        <span>From: </span>
-                        {transaction.from.substring(0, 20)}...
-                      </p>
+                      <Link
+                        className={styles["a"]}
+                        to={"transactions/address/" + transaction.from_address}
+                      >
+                        <p>
+                          <span>From: </span>
+                          {transaction.from_address.substring(0, 20)}...
+                        </p>
+                      </Link>
                       <ArrowRightCircle
                         color="grey"
                         style={{ cursor: "pointer" }}
                       />
                     </div>
                     <div className={styles["table__content_v1"]}>
-                      <p>
-                        <span>To: </span>
-                        {transaction.to.substring(0, 20)}...
-                      </p>
+                      <Link
+                        className={styles["a"]}
+                        to={"transactions/address/" + transaction.to_address}
+                      >
+                        <p>
+                          <span>To: </span>
+                          {transaction.to_address.substring(0, 20)}...
+                        </p>
+                      </Link>
                       <ArrowRightCircle
                         color="grey"
                         style={{ cursor: "pointer" }}
@@ -121,12 +136,16 @@ export default function IndexLayout() {
                     </div>
                     <div className={styles["table__content_v2"]}>
                       <div className={styles["method"]}>
-                        {transaction.method}
+                        {transaction.transaction_action}
                       </div>
                     </div>
                     <div className={styles["table__content_v2"]}>
                       <div className={styles["method"]}>
-                        {transaction.fee_involved}
+                        {ethers.formatUnits(
+                          transaction.transaction_fee!,
+                          "gwei"
+                        )}{" "}
+                        Gwei
                       </div>
                     </div>
                   </div>

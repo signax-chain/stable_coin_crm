@@ -25,7 +25,8 @@ import {
   arrayUnion,
   orderBy,
   deleteDoc,
-  CollectionReference
+  CollectionReference,
+  or,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -52,11 +53,34 @@ const analytics = getAnalytics(firebaseApp);
 
 // ACCESSING FIREBASE DOCS
 const userRef: CollectionReference = collection(firebaseDB, "users");
-const contractRef: CollectionReference = collection(firebaseDB, "contract_user_collections");
-const bankRef: CollectionReference = collection(firebaseDB, "contract_bank_collections");
-const notificationRef: CollectionReference = collection(firebaseDB, "notifications");
-const notificationUserRef: CollectionReference = collection(firebaseDB, "notification_user_collections");
-const stableCoinRef: CollectionReference = collection(firebaseDB, "stable_coin_collections");
+const contractRef: CollectionReference = collection(
+  firebaseDB,
+  "contract_user_collections"
+);
+const bankRef: CollectionReference = collection(
+  firebaseDB,
+  "contract_bank_collections"
+);
+const notificationRef: CollectionReference = collection(
+  firebaseDB,
+  "notifications"
+);
+const notificationUserRef: CollectionReference = collection(
+  firebaseDB,
+  "notification_user_collections"
+);
+const stableCoinRef: CollectionReference = collection(
+  firebaseDB,
+  "stable_coin_collections"
+);
+const transactionRef: CollectionReference = collection(
+  firebaseDB,
+  "transactions"
+);
+const transactionDetailsRef: CollectionReference = collection(
+  firebaseDB,
+  "transaction_details"
+);
 
 export {
   firebaseAuth,
@@ -82,6 +106,7 @@ export {
   deleteDoc,
   getStorage,
   ref,
+  or,
   getDownloadURL,
   uploadBytesResumable,
   getMetadata,
@@ -91,4 +116,6 @@ export {
   notificationRef,
   notificationUserRef,
   stableCoinRef,
+  transactionRef,
+  transactionDetailsRef,
 };

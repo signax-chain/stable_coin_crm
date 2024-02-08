@@ -8,11 +8,6 @@ export const AdminNavbarData: ISidebarItem[] = [
     icon: <LineChart className="navigation-icon" />,
   },
   {
-    title: "Commerical Banks",
-    path: "banks",
-    icon: <Landmark className="navigation-icon" />,
-  },
-  {
     title: "Stable Coins",
     path: "coins",
     icon: <Coins className="navigation-icon" />,

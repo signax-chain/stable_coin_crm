@@ -10,6 +10,9 @@ import {
 } from "../models/IBankDetails";
 import { IUserBankRelation, IWalletData } from "../models/IGeneralFormData";
 import { localStorageController } from "./storage.controller";
+import { iTransaction, iTransactionDetails } from "../models/ITransaction";
+import { Timestamp } from "firebase/firestore";
+import { transactionController } from "./database/transaction.controller";
 
 class BankController {
   async getAllBanks(
@@ -80,8 +83,56 @@ class BankController {
       let transaction = await contract.addBank(bank.bank_address, data);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "create_bank",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+      
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "create_bank",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -114,8 +165,56 @@ class BankController {
       );
       const transactionData = await transaction.wait();
       if (transactionData) {
+        
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "add_user_address_info",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+      
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "add_user_address_info",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -234,8 +333,56 @@ class BankController {
       const transaction = await contract.requestTokens(address, _tokens);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let account = await provider.getSigner();
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: account.address,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: account.address,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "request_token",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+      let account = await provider.getSigner();
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: account.address,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: account.address,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "request_token",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -258,8 +405,56 @@ class BankController {
       const transaction = await contract.approveTokens(address);
       const transactionData = await transaction.wait();
       if (transactionData) {
+        let account = await provider.getSigner();
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: account.address,
+          to_address: address,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: account.address,
+          to_address: address,
+          transaction_tokens: [],
+          transaction_action: "approve_request_token",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+      let account = await provider.getSigner();
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: account.address,
+        to_address: address,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: account.address,
+        to_address: address,
+        transaction_tokens: [],
+        transaction_action: "approve_request_token",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;
@@ -287,8 +482,57 @@ class BankController {
       );
       const transactionData = await transaction.wait();
       if (transactionData) {
+        console.log(transactionData);
+        
+        let baseTransaction: iTransaction = {
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          created_at: Timestamp.now(),
+        };
+        let extraDetails: iTransactionDetails = {
+          doc_id: "",
+          transaction_hash: transactionData.blockHash,
+          from_address: transactionData.from,
+          to_address: transactionData.to,
+          transaction_tokens: [],
+          transaction_action: "create_central_bank",
+          transaction_block: transactionData.blockNumber,
+          transaction_value: 0,
+          transaction_fee: Number(transactionData.gasUsed),
+          transaction_status: "success",
+          created_at: Timestamp.now(),
+        };
+        await transactionController.createTransaction(
+          baseTransaction,
+          extraDetails
+        );
         return true;
       }
+      
+      let baseTransaction: iTransaction = {
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        created_at: Timestamp.now(),
+      };
+      let extraDetails: iTransactionDetails = {
+        doc_id: "",
+        transaction_hash: transactionData.blockHash,
+        from_address: transactionData.from,
+        to_address: transactionData.to,
+        transaction_tokens: [],
+        transaction_action: "create_central_bank",
+        transaction_block: transactionData.blockNumber,
+        transaction_value: 0,
+        transaction_fee: Number(transactionData.gasUsed),
+        transaction_status: "error",
+        created_at: Timestamp.now(),
+      };
+      await transactionController.createTransaction(
+        baseTransaction,
+        extraDetails
+      );
       return false;
     } catch (error) {
       throw error;

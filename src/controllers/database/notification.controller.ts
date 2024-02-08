@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, setDoc } from "firebase/firestore";
 import {
   getDocs,
   notificationRef,
@@ -6,6 +6,7 @@ import {
   notificationUserRef,
   query,
   where,
+  doc,
 } from "../../helpers/Config";
 import { IContractDatabaseDetails } from "../../models/IContractDetails";
 import {
@@ -17,12 +18,15 @@ import { IStableCoins } from "../../models/IStableCoins";
 import { IBankDetails } from "../../models/IBankDetails";
 import { IUserDetails } from "../../models/IUserDetails";
 class NotificationController {
-  async getAllNotifications(uid: string, role: string): Promise<INotificationUserDetails[]> {
+  async getAllNotifications(
+    uid: string,
+    role: string
+  ): Promise<INotificationUserDetails[]> {
     try {
       let data: INotificationUserDetails[] = [];
       const documentRequest = query(
         notificationUserRef,
-        where("receiver_id", "==", role==="team" ? "team" : uid)
+        where("receiver_id", "==", role === "team" ? "team" : uid)
       );
       const documentResponse = await getDocs(documentRequest);
       for (let index = 0; index < documentResponse.docs.length; index++) {
@@ -39,6 +43,7 @@ class NotificationController {
           updated_at: elementData.updated_at,
           notification_type: elementData.notification_type,
           data: elementData.data,
+          doc_id: element.id,
         };
         data.push(elementContent);
       }
@@ -73,6 +78,7 @@ class NotificationController {
               updated_at: Timestamp.now(),
               notification_type: notification.notification_type,
               data: data,
+              doc_id: undefined,
             };
             await addDoc(notificationRef, notificationData);
           }
@@ -86,9 +92,10 @@ class NotificationController {
             message: `We have minted ${contractData.token_details.token_supply} stable coins. Click on send button to send ${contractData.token_details.token_supply} CBDC's to CCX Team`,
             is_read: false,
             created_at: Timestamp.now(),
-            updated_at:  Timestamp.now(),
+            updated_at: Timestamp.now(),
             notification_type: notification.notification_type,
             data: data,
+            doc_id: undefined,
           };
           await addDoc(notificationUserRef, notificationData);
           return true;
@@ -100,13 +107,25 @@ class NotificationController {
     }
   }
 
-  async createNotificationWithUserData(notificationData: INotificationUserDetails){
+  async createNotificationWithUserData(
+    notificationData: INotificationUserDetails
+  ) {
     try {
       const res = await addDoc(notificationUserRef, notificationData);
-      if(res){
+      if (res) {
         return true;
       }
       return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateNotification(data: INotificationUserDetails): Promise<boolean> {
+    try {
+      let documentRequest = doc(notificationUserRef, data.doc_id);
+      await setDoc(documentRequest, data, { merge: true });
+      return true;
     } catch (error) {
       throw error;
     }

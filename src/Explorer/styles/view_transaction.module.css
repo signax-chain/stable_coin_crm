@@ -1,0 +1,132 @@
+.view__transaction_section {
+  width: 100%;
+  height: 100%;
+  background-color: #162038;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+.view__transaction_content {
+  width: 95%;
+  height: calc(100% - 5vh);
+}
+.view__transaction_heading {
+  width: 100%;
+  color: white;
+}
+.view__txn_heading {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.view__txn_heading > h3 {
+  color: white;
+  font-size: 20px;
+  margin: 0px;
+  padding: 30px;
+  font-weight: 500;
+}
+.divider {
+  width: 100%;
+  border-bottom: 1px solid var(--explorer-border-color);
+}
+.view__transaction_body {
+  width: 100%;
+}
+.view__transaction_details {
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.view__transaction_info {
+  width: 95%;
+  padding: 10px;
+  margin-top: 30px;
+  background-color: var(--explorer-color);
+  border-radius: 10px;
+  border: 1px solid var(--explorer-border-color);
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: calc(100vh - 35vh);
+}
+.view__transaction_table_heading {
+  width: 100%;
+  height: 50px;
+  color: white;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--explorer-border-color);
+}
+.view__details {
+  width: 100%;
+  height: calc(100% - 50px);
+}
+table,
+td {
+  border-collapse: collapse;
+  border: none;
+}
+.heading {
+  margin: 0px;
+  color: #626f84;
+  font-weight: 500;
+}
+.heading_value {
+  color: white;
+  font-size: 14px;
+}
+.box__container {
+  width: 100px;
+  border: 1px solid var(--primary-color);
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.box__container > span {
+  font-weight: 500;
+  margin-left: 5px;
+  color: var(--primary-color);
+}
+.box__container_error {
+  width: 100px;
+  border: 1px solid red;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.box__container_error > span {
+  font-weight: 500;
+  margin-left: 5px;
+  color: red;
+}
+.box {
+  width: 100px;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.box > span {
+  font-weight: 500;
+  margin-left: 15px;
+  color: white;
+}
+a {
+  text-transform: none;
+  text-decoration: none;
+  color: #0A84C3;
+  margin-left: 5px;
+}

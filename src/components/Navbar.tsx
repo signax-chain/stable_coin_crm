@@ -151,7 +151,7 @@ export default function NavbarComponent(props: {
                 </div>
                 <p>{data.address.substring(0, 28)}...</p>
               </div>
-              <Link to={"/explorer/address/" + data.address}>
+              <Link to={"/explorer/transactions/address/" + data.address}>
                 <ExternalLink style={{ cursor: "pointer" }} />
               </Link>
             </div>

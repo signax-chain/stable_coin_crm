@@ -23,15 +23,16 @@ export interface INotificationUserDetails {
   message: string;
   is_read: boolean;
   notification_type:
-  | "request_token"
-  | "response_request_token"
-  | "general"
-  | undefined;
+    | "request_token"
+    | "response_request_token"
+    | "general"
+    | undefined;
   created_at: Timestamp;
   updated_at: Timestamp;
   data: IStableCoins | IBankDetails | IUserDetails | undefined;
+  doc_id: string | undefined;
 }
 
 export interface INotificationData {
-  data: IStableCoins | IBankDetails | IUserDetails
+  data: IStableCoins | IBankDetails | IUserDetails;
 }

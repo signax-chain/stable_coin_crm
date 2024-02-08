@@ -91,8 +91,8 @@ export default function DashboardComponent() {
   }, [language]);
 
   useEffect(() => {
-    getContractAddress();
     if(role.role !== "team"){
+      getContractAddress();
       contractController
       .getContractByBankId(userInformation?.user_id!)
       .then((value) => {
@@ -257,9 +257,9 @@ export default function DashboardComponent() {
         toast("Token created successfully", {
           type: "success",
         });
-        setTimeout(() => {
+        setTimeout( async () => {
           changeLoadingStatus(false);
-          window.location.reload();
+          await getContractAddress();
         }, 3000);
       } else {
         toast("Token creation failed", {
@@ -297,7 +297,7 @@ export default function DashboardComponent() {
         });
         setTimeout(() => {
           changeLoadingStatus(false);
-          window.location.reload();
+          getContractAddress();
         }, 3000);
       }
     } catch (error) {
@@ -369,7 +369,7 @@ export default function DashboardComponent() {
         <div className={styles["dashboard__basic_stats"]}>
           {stats.map((stat, index) => {
             return (
-              <div className={styles["dashboard__card"]}>
+              <div className={styles["dashboard__card"]} key={index}>
                 <GradientInformationCard data={stat} />
               </div>
             );

@@ -5,6 +5,7 @@ import PortalNavbar from "./Navbar/PortalNavbar";
 import { Route, Routes } from "react-router-dom";
 import IndexLayout from "./Content/Index";
 import AllTransactions from "./Content/AllTransactions";
+import ViewTransactionHash from "./Content/ViewTransactionHash";
 
 export default function Explorer() {
   return (
@@ -16,7 +17,8 @@ export default function Explorer() {
         <Routes>
           <Route path="" element={<IndexLayout />} />
           <Route path="transactions" element={<AllTransactions />} />
-          <Route path="address/:id" element={<AllTransactions />} />
+          <Route path="transactions/:type/:id" element={<AllTransactions />} />
+          <Route path="txn/:id" element={<ViewTransactionHash />} />
         </Routes>
       </div>
     </div>
