@@ -1,6 +1,3 @@
-export const CONTRACT_ADDRESS = "0x646D5848c9E4d493d3AF902E83971Ea04ae66553";
-export const STABLE_COIN_CONTRACT_ADDRESS = "0xEAdac17Dc3F2F52a4dfBF524690A66f27afe9bdC";
-
 export const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/QZN0dSFmJQ6xAM7yzbzpA76C2CbZFyQF";
 
 export const allBanks = [

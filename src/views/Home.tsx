@@ -21,7 +21,7 @@ import PlatformUsers from "../components/Users/PlatformUsers";
 import { INotificationUserDetails } from "../models/INotifications";
 import { notificationController } from "../controllers/database/notification.controller";
 import NotificationComponent from "../components/Notification/NotificationComponent";
-import { STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
+import { STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/ContractAddress";
 
 export default function HomeLayout() {
   const [selectedSidebarIndex, setSelectedSidebarIndex] = useState<number>(0);

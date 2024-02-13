@@ -18,7 +18,7 @@ import { IWalletData } from "../../models/IGeneralFormData";
 
 import styles from "../../styles/banks.module.css";
 import { useTranslation } from "../../context/TranslatorContextProvider";
-import { CONTRACT_ADDRESS } from "../../helpers/Constants";
+import { CONTRACT_ADDRESS } from "../../helpers/ContractAddress";
 import { toast } from "react-toastify";
 import { bankDatabaseController } from "../../controllers/database/bank.controller";
 import { useRoleFinder } from "../../context/RoleContextProvider";

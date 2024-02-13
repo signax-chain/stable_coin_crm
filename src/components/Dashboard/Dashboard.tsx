@@ -91,113 +91,121 @@ export default function DashboardComponent() {
   }, [language]);
 
   useEffect(() => {
-    if(role.role !== "team"){
+    if (role.role !== "team") {
       getContractAddress();
       contractController
-      .getContractByBankId(userInformation?.user_id!)
-      .then((value) => {
-        localStorageController.setData(
-          "contract_address",
-          value!.contract_address
-        );
-      });
+        .getContractByBankId(userInformation?.user_id!)
+        .then((value) => {
+          localStorageController.setData(
+            "contract_address",
+            value!.contract_address
+          );
+        });
     }
   }, []);
 
   const getContractAddress = async () => {
-    const address = localStorageController.getData("wallet");
-    const contract_address = localStorageController.getData("contract_address");
-    if (address) {
-      changeLoaderText("Fetching Tokens....");
-      changeLoadingStatus(true);
-      const data: IWalletData = JSON.parse(address);
-      const tokenData = await tokenController.getAllToken(data!.data.address);
-      const balance = await bankController.getBalanceOf(
-        data!.data.address,
-        contract_address,
-      );
-      const allBanks = await bankController.getAllBanks(contract_address);
-      if (tokenData.length) {
-        let token: ITokenDetails = {
-          token_id: tokenData[0].token_id,
-          token_name: tokenData[0].name,
-          token_description: " ",
-          token_supply: balance,
-        };
-        setTokenAvailable(token);
-        let statsData = [
-          {
-            title: "Available Tokens",
-            content: `${tokenData.length}`,
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-          {
-            title: "Total Supply",
-            content: `${balance}`,
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-          {
-            title: "Available Banks",
-            content: `${allBanks.length}`,
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-          {
-            title: "Total Users",
-            content: "100",
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-          {
-            title: "Transactions per month",
-            content: "1000",
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-          {
-            title: "Available Banks",
-            content: "10",
-            footer: [
-              {
-                title: "Last Updated",
-                content: `${new Date().toDateString()}`,
-                footer: [],
-              },
-            ],
-          },
-        ];
-        setStats(statsData);
-        setAllBanks(allBanks);
-      } else {
-        setTokenAvailable(undefined);
+    try {
+      const address = localStorageController.getData("wallet");
+      const contract_address =
+        localStorageController.getData("contract_address");
+      if (address) {
+        changeLoaderText("Fetching Tokens....");
+        changeLoadingStatus(true);
+        const data: IWalletData = JSON.parse(address);
+        const tokenData = await tokenController.getAllToken(data!.data.address);
+        const balance = await bankController.getBalanceOf(
+          data!.data.address,
+          contract_address
+        );
+        const allBanks = await bankController.getAllBanks(contract_address);
+        if (tokenData.length) {
+          let token: ITokenDetails = {
+            token_id: tokenData[0].token_id,
+            token_name: tokenData[0].name,
+            token_description: " ",
+            token_supply: balance,
+          };
+          setTokenAvailable(token);
+          let statsData = [
+            {
+              title: "Available Tokens",
+              content: `${tokenData.length}`,
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+            {
+              title: "Total Supply",
+              content: `${balance}`,
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+            {
+              title: "Available Banks",
+              content: `${allBanks.length}`,
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+            {
+              title: "Total Users",
+              content: "100",
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+            {
+              title: "Transactions per month",
+              content: "1000",
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+            {
+              title: "Available Banks",
+              content: "10",
+              footer: [
+                {
+                  title: "Last Updated",
+                  content: `${new Date().toDateString()}`,
+                  footer: [],
+                },
+              ],
+            },
+          ];
+          setStats(statsData);
+          setAllBanks(allBanks);
+        } else {
+          setTokenAvailable(undefined);
+        }
+        setTimeout(() => {
+          changeLoadingStatus(false);
+        }, 3000);
       }
+    } catch (error) {
+      console.log(error);
       setTimeout(() => {
         changeLoadingStatus(false);
       }, 3000);
@@ -257,7 +265,7 @@ export default function DashboardComponent() {
         toast("Token created successfully", {
           type: "success",
         });
-        setTimeout( async () => {
+        setTimeout(async () => {
           changeLoadingStatus(false);
           await getContractAddress();
         }, 3000);
@@ -284,7 +292,9 @@ export default function DashboardComponent() {
       const response = await tokenController.transfer(e);
       if (response) {
         let selectedData: IContractDatabaseDetails | undefined =
-          await contractController.getContractByBankId(userInformation?.user_id!);
+          await contractController.getContractByBankId(
+            userInformation?.user_id!
+          );
         selectedData!.token_details.token_supply -= e.supply_to_be_sent;
         selectedData!.updated_at = new Date();
         await contractController.updateUserContractCollection(
@@ -319,7 +329,7 @@ export default function DashboardComponent() {
     }
   };
 
-  if ((!isLoggedIn) && role.role === "central_bank") {
+  if (!isLoggedIn && role.role === "central_bank") {
     return (
       <div className={styles["stepper__compo_main"]}>
         <StepperComponent

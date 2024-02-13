@@ -10,8 +10,6 @@ import { TranslationProvider } from "./context/TranslatorContextProvider";
 import LoaderContextProvider from "./context/LoaderContextProvider";
 import Loader from "./components/Modals/Loader";
 import { RoleProvider } from "./context/RoleContextProvider";
-import { localStorageController } from "./controllers/storage.controller";
-import { CONTRACT_ADDRESS } from "./helpers/Constants";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);

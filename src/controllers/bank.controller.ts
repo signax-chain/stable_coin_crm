@@ -2,7 +2,8 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CBDCContract from "../artifacts/contracts/cbdccoin.sol/CBDCCoin.json";
 import StableContract from "../artifacts/contracts/stablecoin.sol/StableCoin.json";
-import { RPC_URL, STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/Constants";
+import { RPC_URL } from "../helpers/Constants";
+import {  STABLE_COIN_CONTRACT_ADDRESS } from "../helpers/ContractAddress";
 import {
   IBankDetails,
   ICentralBankDetails,

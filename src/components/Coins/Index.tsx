@@ -8,7 +8,7 @@ import {
 } from "../../models/IGeneralFormData";
 
 import styles from "../../styles/coin_index.module.css";
-import { STABLE_COIN_CONTRACT_ADDRESS } from "../../helpers/Constants";
+import { STABLE_COIN_CONTRACT_ADDRESS } from "../../helpers/ContractAddress";
 import { contractController } from "../../controllers/database/contract.controller";
 import { IContractDatabaseDetails } from "../../models/IContractDetails";
 import { INotificationDetails } from "../../models/INotifications";
