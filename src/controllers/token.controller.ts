@@ -376,9 +376,7 @@ class TokenController {
 
   async mintToken(value: number, country: string) {
     try {
-      const web3Modal = new Web3Modal({
-        cacheProvider: true, // optional
-      });
+      const web3Modal = new Web3Modal({});
       const connection = await web3Modal.connect();
       const provider = new ethers.BrowserProvider(connection);
       const signer = await provider.getSigner();

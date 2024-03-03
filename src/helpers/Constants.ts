@@ -1,4 +1,5 @@
 export const RPC_URL = "https://eth-sepolia.g.alchemy.com/v2/QZN0dSFmJQ6xAM7yzbzpA76C2CbZFyQF";
+export const STABLE_COIN_RPC="http://127.0.0.1:9650/ext/bc/2Rz19DPoS9g1D1F7qcS4fFei3rW8dDQiqBiPNPPyTGnMxzdeLL/rpc";
 
 export const allBanks = [
   "ICICI Bank Ltd",
